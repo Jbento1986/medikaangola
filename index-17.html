@@ -1,0 +1,2892 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MédiKa — Saúde Digital em Angola</title>
+<meta name="description" content="Consulte médicos especializados via vídeo em minutos. Sem filas, sem deslocamentos. A plataforma #1 de telemedicina em Angola.">
+<meta name="keywords" content="telemedicina Angola, médico online, consulta vídeo, saúde digital, MédiKa">
+<meta property="og:title" content="MédiKa — Saúde Digital em Angola">
+<meta property="og:description" content="Consulte médicos especializados via vídeo em minutos. Disponível em todo o território angolano.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://medikaangola.ao">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="robots" content="index, follow">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%230d9488'/><text y='.9em' font-size='70' x='12'>🩺</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #0a1628; --ink-soft: #1e3a5f; --cream: #f7f3ee; --cream-dark: #ede8e0;
+    --teal: #0d9488; --teal-light: #14b8a6; --teal-pale: #ccfbf1;
+    --amber: #f59e0b; --red: #ef4444; --white: #ffffff; --radius: 16px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; }
+
+  /* ── VIEWS ── */
+  .view { display: none; min-height: 100vh; flex-direction: column; }
+  .view.active { display: flex; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px; border-radius: 50px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: all .2s; border: none; text-decoration: none; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-primary { background: var(--teal); color: white; }
+  .btn-primary:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(13,148,136,0.4); }
+  .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.25); }
+  .btn-outline:hover { background: rgba(255,255,255,0.08); }
+  .btn-dark { background: var(--ink); color: white; }
+  .btn-white { background: white; color: var(--ink); }
+  .btn-google { background: white; color: var(--ink); border: 1px solid var(--cream-dark); width: 100%; justify-content: center; border-radius: 10px; padding: 13px; font-size: 15px; }
+  .btn-google:hover { background: var(--cream); }
+
+  /* ══ AUTH PAGES ══ */
+  #login-page, #register-page {
+    background: var(--ink);
+    align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .auth-orb {
+    position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; pointer-events: none;
+  }
+  .auth-orb-1 { width: 500px; height: 500px; background: var(--teal); top: -200px; right: -100px; }
+  .auth-orb-2 { width: 400px; height: 400px; background: #1e40af; bottom: -100px; left: -100px; }
+
+  .auth-card {
+    background: white; border-radius: 24px; padding: 40px;
+    width: 100%; max-width: 420px; position: relative; z-index: 2;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.3);
+  }
+  .auth-logo { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--ink); margin-bottom: 8px; }
+  .auth-logo span { color: var(--teal); }
+  .auth-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 28px; }
+  .auth-title { font-family: 'Instrument Serif', serif; font-size: 26px; margin-bottom: 4px; }
+
+  .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; color: #9ca3af; font-size: 13px; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--cream-dark); }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; padding: 13px 14px; border-radius: 10px;
+    border: 1px solid var(--cream-dark); background: var(--cream);
+    font-size: 14px; font-family: 'DM Sans', sans-serif; color: var(--ink);
+    outline: none; transition: border .2s;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--teal); background: white; }
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  .btn-submit {
+    width: 100%; padding: 14px; border-radius: 10px; background: var(--teal);
+    color: white; font-size: 15px; font-weight: 600; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; transition: all .2s; margin-top: 4px;
+  }
+  .btn-submit:hover { background: var(--teal-light); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .auth-switch { text-align: center; margin-top: 20px; font-size: 14px; color: #6b7280; }
+  .auth-switch a { color: var(--teal); cursor: pointer; font-weight: 600; text-decoration: none; }
+
+  .error-msg {
+    background: #fee2e2; border: 1px solid #fca5a5; color: #991b1b;
+    padding: 10px 14px; border-radius: 8px; font-size: 13px;
+    margin-bottom: 16px; display: none;
+  }
+  .error-msg.show { display: block; }
+  .success-msg {
+    background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46;
+    padding: 10px 14px; border-radius: 8px; font-size: 13px;
+    margin-bottom: 16px; display: none;
+  }
+  .success-msg.show { display: block; }
+
+  /* ══ LANDING ══ */
+  #landing { background: var(--ink); color: white; }
+  .bg-orbs { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18; animation: drift 12s ease-in-out infinite alternate; }
+  .orb-1 { width: 600px; height: 600px; background: var(--teal); top: -200px; right: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: #1e40af; bottom: 0; left: -100px; animation-delay: -4s; }
+  @keyframes drift { from { transform: translate(0,0); } to { transform: translate(30px,20px); } }
+
+  nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 24px 60px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-wrap: wrap; gap: 12px;
+  }
+  .logo { font-family: 'Instrument Serif', serif; font-size: 28px; color: white; }
+  .logo span { color: var(--teal-light); }
+  .nav-links { display: flex; gap: 12px; align-items: center; }
+
+  .hero { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 100px 40px 80px; gap: 24px; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(13,148,136,0.15); border: 1px solid rgba(20,184,166,0.3); color: var(--teal-light); padding: 6px 16px; border-radius: 50px; font-size: 13px; }
+  .badge-dot { width: 6px; height: 6px; background: var(--teal-light); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .hero h1 { font-family: 'Instrument Serif', serif; font-size: clamp(42px,7vw,88px); line-height: 1.05; letter-spacing: -2px; max-width: 900px; }
+  .hero h1 em { color: var(--teal-light); font-style: italic; }
+  .hero p { font-size: 18px; color: rgba(255,255,255,0.6); max-width: 560px; line-height: 1.7; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .hero-stats { display: flex; gap: 48px; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Instrument Serif', serif; font-size: 36px; color: var(--teal-light); }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .section { padding: 80px 60px; }
+  .section-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--teal); margin-bottom: 12px; }
+  .section h2 { font-family: 'Instrument Serif', serif; font-size: clamp(28px,4vw,52px); line-height: 1.1; letter-spacing: -1px; max-width: 600px; }
+
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 20px; margin-top: 48px; }
+  .feature-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 32px; transition: all .3s; }
+  .feature-card:hover { background: rgba(255,255,255,0.07); transform: translateY(-4px); }
+  .feature-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(13,148,136,0.15); border: 1px solid rgba(20,184,166,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px; }
+  .feature-card h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .feature-card p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  #pricing-section { background: var(--cream); color: var(--ink); padding: 80px 60px; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 20px; margin-top: 48px; }
+  .plan-card { background: white; border: 1px solid var(--cream-dark); border-radius: var(--radius); padding: 36px; transition: all .3s; position: relative; }
+  .plan-card.featured { background: var(--ink); color: white; transform: scale(1.03); }
+  .plan-card:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+  .plan-badge { display: inline-block; background: var(--teal); color: white; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 50px; margin-bottom: 16px; }
+  .plan-name { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .plan-price { font-family: 'Instrument Serif', serif; font-size: 48px; line-height: 1; margin-bottom: 4px; }
+  .plan-price span { font-size: 16px; font-family: 'DM Sans',sans-serif; font-weight: 400; opacity: 0.6; }
+  .plan-desc { font-size: 13px; opacity: 0.55; margin-bottom: 24px; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .plan-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+  .plan-features li::before { content: '✓'; color: var(--teal-light); font-weight: 700; }
+
+  .how-section { background: var(--ink); color: white; padding: 80px 60px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 40px; margin-top: 48px; }
+  .step { text-align: center; }
+  .step-num { font-family: 'Instrument Serif',serif; font-size: 72px; color: rgba(255,255,255,0.06); line-height: 1; margin-bottom: -20px; }
+  .step-icon { font-size: 36px; display: block; margin-bottom: 16px; }
+  .step h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .step p { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+  /* ══ APP PACIENTE ══ */
+  #app-patient { background: var(--cream); flex-direction: row; min-height: 100vh; }
+  .sidebar { width: 240px; background: var(--ink); color: white; display: flex; flex-direction: column; padding: 28px 0; flex-shrink: 0; }
+  .sidebar .logo { padding: 0 24px; font-size: 22px; margin-bottom: 32px; }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 2px; flex: 1; padding: 0 12px; }
+  .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.5); transition: all .2s; }
+  .sidebar-item:hover, .sidebar-item.active { background: rgba(255,255,255,0.08); color: white; }
+  .sidebar-item.active { background: var(--teal); color: white; }
+  .sidebar-item span { font-size: 18px; }
+  .sidebar-footer { padding: 12px; }
+  .user-pill { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.06); }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; color: white; }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-role { font-size: 11px; color: rgba(255,255,255,0.4); }
+
+  .main-content { flex: 1; overflow-y: auto; padding: 36px; display: flex; flex-direction: column; gap: 24px; }
+  .page-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+  .page-title { font-family: 'Instrument Serif',serif; font-size: 32px; color: var(--ink); }
+  .page-subtitle { font-size: 14px; color: #6b7280; margin-top: 4px; }
+
+  .card { background: white; border-radius: var(--radius); border: 1px solid var(--cream-dark); padding: 24px; }
+  .card-title { font-size: 14px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .stat-card { background: white; border-radius: var(--radius); border: 1px solid var(--cream-dark); padding: 20px 24px; display: flex; flex-direction: column; gap: 6px; }
+  .stat-card .label { font-size: 12px; color: #9ca3af; font-weight: 500; }
+  .stat-card .value { font-family: 'Instrument Serif',serif; font-size: 36px; color: var(--ink); }
+  .stat-card .change { font-size: 12px; color: var(--teal); }
+  .stat-card .icon-bg { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 8px; }
+
+  .doctors-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 16px; }
+  .doctor-card { background: white; border: 1px solid var(--cream-dark); border-radius: var(--radius); padding: 20px; transition: all .2s; cursor: pointer; }
+  .doctor-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+  .doctor-header { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+  .doctor-avatar { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .doctor-name { font-size: 15px; font-weight: 600; }
+  .doctor-spec { font-size: 12px; color: #6b7280; margin-top: 2px; }
+  .doctor-rating { display: flex; align-items: center; gap: 4px; font-size: 12px; margin-top: 6px; color: var(--amber); }
+  .doctor-info { display: flex; gap: 16px; font-size: 12px; color: #9ca3af; border-top: 1px solid var(--cream-dark); padding-top: 14px; }
+  .availability-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 50px; }
+  .avail-green { background: #d1fae5; color: #065f46; }
+  .avail-yellow { background: #fef3c7; color: #92400e; }
+  .avail-red { background: #fee2e2; color: #991b1b; }
+
+  .appt-list { display: flex; flex-direction: column; gap: 12px; }
+  .appt-item { display: flex; align-items: center; gap: 16px; background: white; border: 1px solid var(--cream-dark); border-radius: 12px; padding: 16px 20px; flex-wrap: wrap; }
+  .appt-time-block { text-align: center; min-width: 52px; }
+  .appt-time { font-family: 'Instrument Serif',serif; font-size: 22px; color: var(--teal); }
+  .appt-date { font-size: 11px; color: #9ca3af; }
+  .appt-info { flex: 1; min-width: 140px; }
+  .appt-doc { font-size: 15px; font-weight: 600; }
+  .appt-spec { font-size: 12px; color: #6b7280; }
+  .appt-status { padding: 4px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+  .status-confirmed { background: #d1fae5; color: #065f46; }
+  .status-pending { background: #fef3c7; color: #92400e; }
+  .status-completed { background: #e0e7ff; color: #3730a3; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(10,22,40,0.7); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 20px; width: 100%; max-width: 520px; padding: 36px; position: relative; max-height: 90vh; overflow-y: auto; }
+  .modal h2 { font-family: 'Instrument Serif',serif; font-size: 28px; margin-bottom: 6px; }
+  .modal p { font-size: 14px; color: #6b7280; margin-bottom: 24px; }
+  .modal-close { position: absolute; top: 20px; right: 20px; width: 32px; height: 32px; border-radius: 50%; background: var(--cream); border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  .time-slots { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 8px; }
+  .time-slot { padding: 8px 4px; border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid var(--cream-dark); background: var(--cream); transition: all .15s; }
+  .time-slot:hover { border-color: var(--teal); color: var(--teal); }
+  .time-slot.selected { background: var(--teal); color: white; border-color: var(--teal); }
+  .time-slot.busy { opacity: 0.35; cursor: not-allowed; }
+
+  /* CONSULTA VÍDEO */
+  #consultation-view { background: #0f172a; color: white; position: fixed; inset: 0; z-index: 200; display: none; flex-direction: column; }
+  #consultation-view.open { display: flex; }
+  .video-area { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; }
+  .video-box { border-radius: 16px; overflow: hidden; position: relative; background: #1e293b; display: flex; align-items: center; justify-content: center; }
+  .video-placeholder { text-align: center; }
+  .video-placeholder .v-avatar { font-size: 56px; margin-bottom: 12px; }
+  .video-placeholder p { font-size: 14px; color: rgba(255,255,255,0.5); }
+  .video-label { position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); padding: 4px 12px; border-radius: 50px; font-size: 12px; }
+  .self-video { position: absolute; bottom: 80px; right: 16px; width: 160px; height: 100px; border-radius: 12px; background: #374151; border: 2px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .controls { height: 80px; background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .ctrl-btn { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: none; transition: all .2s; }
+  .ctrl-btn.normal { background: rgba(255,255,255,0.1); color: white; }
+  .ctrl-btn.normal:hover { background: rgba(255,255,255,0.18); }
+  .ctrl-btn.danger { background: var(--red); color: white; }
+  .consult-timer { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); padding: 6px 20px; border-radius: 50px; font-size: 14px; font-weight: 600; }
+  .chat-panel { width: 300px; background: #1e293b; display: flex; flex-direction: column; padding: 16px; border-left: 1px solid rgba(255,255,255,0.06); }
+  .chat-title { font-size: 14px; font-weight: 600; margin-bottom: 16px; color: rgba(255,255,255,0.7); }
+  .chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  .chat-msg { max-width: 220px; padding: 8px 12px; border-radius: 12px; font-size: 13px; }
+  .chat-msg.sent { background: var(--teal); align-self: flex-end; border-bottom-right-radius: 4px; }
+  .chat-msg.recv { background: #334155; align-self: flex-start; border-bottom-left-radius: 4px; }
+  .chat-msg .msg-sender { font-size: 10px; opacity: 0.6; margin-bottom: 3px; }
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input-row input { flex: 1; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); color: white; font-size: 13px; font-family: 'DM Sans',sans-serif; outline: none; }
+  .chat-send { background: var(--teal); color: white; border: none; border-radius: 10px; padding: 0 14px; cursor: pointer; font-size: 16px; }
+
+  /* ADMIN */
+  #app-admin { background: var(--cream); flex-direction: row; min-height: 100vh; }
+  .admin-sidebar { width: 220px; background: white; border-right: 1px solid var(--cream-dark); padding: 24px 0; display: flex; flex-direction: column; flex-shrink: 0; }
+  .admin-sidebar .logo { padding: 0 20px; font-size: 20px; color: var(--ink); margin-bottom: 28px; }
+  .admin-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 10px; flex: 1; }
+  .admin-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: #6b7280; transition: all .15s; }
+  .admin-item:hover { background: var(--cream); color: var(--ink); }
+  .admin-item.active { background: var(--teal-pale); color: var(--teal); }
+  .admin-content { flex: 1; padding: 32px; overflow-y: auto; }
+  .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+  .admin-title { font-family: 'Instrument Serif',serif; font-size: 28px; }
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+  .kpi { background: white; border: 1px solid var(--cream-dark); border-radius: var(--radius); padding: 20px 24px; }
+  .kpi-label { font-size: 12px; color: #9ca3af; font-weight: 500; margin-bottom: 8px; }
+  .kpi-value { font-family: 'Instrument Serif',serif; font-size: 40px; color: var(--ink); }
+  .kpi-trend { font-size: 12px; margin-top: 4px; }
+  .trend-up { color: var(--teal); }
+  .table-card { background: white; border: 1px solid var(--cream-dark); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+  .table-head { padding: 16px 24px; border-bottom: 1px solid var(--cream-dark); display: flex; justify-content: space-between; align-items: center; }
+  .table-head h3 { font-size: 15px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; padding: 12px 24px; text-align: left; background: var(--cream); }
+  td { padding: 14px 24px; font-size: 14px; border-top: 1px solid var(--cream-dark); }
+  tr:hover td { background: #f9fafb; }
+  .revenue-bar { height: 6px; border-radius: 3px; background: var(--cream-dark); margin-top: 4px; }
+  .revenue-fill { height: 100%; border-radius: 3px; background: var(--teal); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--ink); color: white; padding: 14px 20px; border-radius: 12px; font-size: 14px; display: flex; align-items: center; gap: 10px; z-index: 999; transform: translateY(80px); opacity: 0; transition: all .3s; max-width: 320px; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* LOADING */
+  .loading-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin .6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--cream-dark); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 60px 20px 40px; }
+    .section, #pricing-section, .how-section { padding: 60px 20px; }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
+    .kpi-row { grid-template-columns: repeat(2,1fr); }
+    .sidebar { display: none; }
+    .admin-sidebar { display: none; }
+    .video-area { grid-template-columns: 1fr; }
+    .chat-panel { display: none; }
+    .hero-stats { gap: 24px; }
+  }
+
+  /* BOTTOM NAV MOBILE */
+  .bottom-nav {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 1px solid var(--cream-dark);
+    padding: 8px 0 20px; z-index: 50;
+    grid-template-columns: repeat(5, 1fr);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .bottom-nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    cursor: pointer; padding: 6px 4px;
+    font-size: 10px; font-weight: 600; color: #9ca3af; transition: all .2s;
+  }
+  .bottom-nav-item span { font-size: 22px; }
+  .bottom-nav-item.active { color: var(--teal); }
+  @media (max-width: 768px) {
+    .main-content { padding: 20px 16px 100px !important; }
+  }
+</style>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="text/javascript">emailjs.init("kJqKdNpCHSZKcw9Z1");</script>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="landing" class="view active">
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+  </div>
+  <nav>
+    <div class="logo">Médi<span>Ka</span></div>
+    <div class="nav-links">
+      <button onclick="scrollToPricing()" class="btn btn-outline" style="padding:8px 20px;font-size:13px">Planos</button>
+      <button onclick="showView('login-page')" class="btn btn-outline" style="padding:8px 20px;font-size:13px">Entrar</button>
+      <button onclick="showView('register-page')" class="btn btn-primary" style="padding:8px 20px;font-size:13px">Começar grátis</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="badge"><div class="badge-dot"></div> Plataforma #1 de Telemedicina em Angola</div>
+    <h1>A sua saúde,<br>a <em>qualquer hora</em>,<br>em qualquer lugar</h1>
+    <p>Consulte médicos especializados via vídeo em minutos. Sem filas, sem deslocamentos. Disponível em todo o território angolano.</p>
+    <div class="hero-ctas">
+      <button type="button" class="btn btn-primary" onclick="showView('register-page')" style="font-size:15px;padding:14px 28px">📱 Criar conta grátis</button>
+      <button type="button" class="btn btn-outline" onclick="showView('login-page')" style="font-size:15px;padding:14px 28px">Já tenho conta →</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num" id="stat-patients">2.400+</div><div class="stat-label">Pacientes</div></div>
+      <div class="stat"><div class="stat-num" id="stat-doctors">—</div><div class="stat-label">Médicos</div></div>
+      <div class="stat"><div class="stat-num">21</div><div class="stat-label">Províncias</div></div>
+      <div class="stat"><div class="stat-num">4.8★</div><div class="stat-label">Avaliação</div></div>
+    </div>
+  </section>
+
+  <section class="section" style="background:var(--ink);position:relative;z-index:2;">
+    <div class="section-label">Funcionalidades</div>
+    <h2>Tudo o que precisas para cuidar da tua saúde</h2>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🎥</div><h3>Consulta por Vídeo</h3><p>Videochamadas HD seguras com médicos certificados. Receitas e relatórios digitais emitidos no final.</p></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><h3>Marcação Imediata</h3><p>Agenda uma consulta em menos de 3 minutos. Médicos disponíveis hoje, amanhã e fins de semana.</p></div>
+      <div class="feature-card"><div class="feature-icon">🏥</div><h3>Especialistas em Angola</h3><p>Cardiologia, Pediatria, Clínica Geral, Dermatologia, Ginecologia e mais. Médicos angolanos certificados.</p></div>
+      <div class="feature-card"><div class="feature-icon">📋</div><h3>Historial Médico Digital</h3><p>Todas as consultas, receitas e exames guardados no teu perfil. Acesso seguro a qualquer momento.</p></div>
+      <div class="feature-card"><div class="feature-icon">💊</div><h3>Receitas Digitais</h3><p>O médico emite receitas digitais válidas em qualquer farmácia parceira em Angola.</p></div>
+      <div class="feature-card"><div class="feature-icon">🔒</div><h3>Privacidade Total</h3><p>Dados encriptados. Conformidade com a lei angolana de protecção de dados pessoais (Lei 22/11).</p></div>
+    </div>
+  </section>
+
+  <section class="how-section">
+    <div class="section-label">Como funciona</div>
+    <h2>3 passos para a tua consulta</h2>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><span class="step-icon">🔍</span><h3>Escolhe o médico</h3><p>Filtra por especialidade, disponibilidade e avaliação.</p></div>
+      <div class="step"><div class="step-num">02</div><span class="step-icon">📅</span><h3>Marca a consulta</h3><p>Escolhe o horário que te convém. Confirmação instantânea.</p></div>
+      <div class="step"><div class="step-num">03</div><span class="step-icon">💬</span><h3>Consulta por vídeo</h3><p>Recebe diagnóstico, receita e relatório digital.</p></div>
+      <div class="step"><div class="step-num">04</div><span class="step-icon">💊</span><h3>Acompanhamento</h3><p>Farmácias parceiras entregam em casa.</p></div>
+    </div>
+  </section>
+
+  <section id="pricing-section">
+    <div class="section-label">Planos & Preços</div>
+    <h2>Escolhe o plano certo para ti</h2>
+    <div class="pricing-grid">
+      <div class="plan-card">
+        <div class="plan-name">Básico</div>
+        <div class="plan-price">Grátis<span>/mês</span></div>
+        <div class="plan-desc">Para começar a cuidar da tua saúde</div>
+        <ul class="plan-features"><li>1 consulta por mês</li><li>Clínica Geral apenas</li><li>Chat com médico</li><li>Historial limitado</li></ul>
+        <button class="btn btn-dark" onclick="showView('register-page')" style="width:100%;justify-content:center">Começar grátis</button>
+      </div>
+      <div class="plan-card featured">
+        <div class="plan-badge">Mais popular</div>
+        <div class="plan-name">Família</div>
+        <div class="plan-price">5.900<span> Kz/mês</span></div>
+        <div class="plan-desc">Para toda a família, sem preocupações</div>
+        <ul class="plan-features"><li>Consultas ilimitadas</li><li>Todas as especialidades</li><li>Até 5 membros</li><li>Receitas digitais</li><li>Historial completo</li><li>Prioritário 24h/7</li></ul>
+        <button class="btn btn-primary" onclick="openMulticaixa('Família','5900')" style="width:100%;justify-content:center">Assinar agora</button>
+      </div>
+      <div class="plan-card">
+        <div class="plan-name">Empresas</div>
+        <div class="plan-price">Sob<span> consulta</span></div>
+        <div class="plan-desc">Benefício de saúde para os colaboradores</div>
+        <ul class="plan-features"><li>Colaboradores ilimitados</li><li>Painel de gestão RH</li><li>Relatórios de utilização</li><li>Facturação angolana (AGT)</li></ul>
+        <button class="btn btn-dark" onclick="showToast('📞 A nossa equipa vai entrar em contacto!')" style="width:100%;justify-content:center">Contactar vendas</button>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background:var(--ink);color:rgba(255,255,255,0.4);text-align:center;padding:32px;font-size:13px;position:relative;z-index:2;">
+    <div class="logo" style="font-size:20px;margin-bottom:12px;display:block;text-align:center">Médi<span style="color:var(--teal-light)">Ka</span></div>
+    <p>© <span id="footer-year">2025</span> MédiKa Angola, Lda · Luanda, Angola</p>
+    <p style="margin-top:8px;font-size:11px;">Plataforma licenciada pelo MINSA · Nº Reg. 2025/MINSA/0047</p>
+    <div style="margin-top:16px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
+      <a href="#" onclick="showToast('📄 Política de Privacidade — em breve');return false;" style="color:rgba(255,255,255,0.35);font-size:12px;text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Política de Privacidade</a>
+      <span style="color:rgba(255,255,255,0.15)">·</span>
+      <a href="#" onclick="showToast('📄 Termos de Uso — em breve');return false;" style="color:rgba(255,255,255,0.35);font-size:12px;text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Termos de Uso</a>
+      <span style="color:rgba(255,255,255,0.15)">·</span>
+      <a href="https://wa.me/244945198283" target="_blank" style="color:rgba(255,255,255,0.35);font-size:12px;text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">Suporte</a>
+    </div>
+    <p style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.2)">Os dados médicos são protegidos nos termos da Lei 22/11 de protecção de dados pessoais de Angola.</p>
+  </footer>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-page" class="view">
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="auth-card">
+    <div class="auth-logo">Médi<span>Ka</span></div>
+    <div class="auth-title">Bem-vindo de volta</div>
+    <div class="auth-subtitle">Entra na tua conta para continuar</div>
+
+    <div class="error-msg" id="login-error"></div>
+
+    <button class="btn btn-google" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Entrar com Google
+    </button>
+
+    <div class="divider">ou</div>
+
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="login-email" placeholder="o.teu@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="login-password" placeholder="••••••••">
+      <div style="text-align:right;margin-top:6px">
+        <button type="button" onclick="forgotPassword()" style="background:none;border:none;color:var(--teal);cursor:pointer;font-size:12px;font-weight:600;padding:0;font-family:'DM Sans',sans-serif">Esqueci a password</button>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="login-btn" onclick="loginEmail()">Entrar</button>
+
+    <div class="auth-switch">
+      Não tens conta? <button type="button" onclick="showView('register-page')" style="background:none;border:none;color:var(--teal);cursor:pointer;font-weight:600;font-size:14px;padding:0">Cria uma grátis</button>
+      &nbsp;·&nbsp; <button type="button" onclick="showView('landing')" style="background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;padding:0">← Voltar ao site</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REGISTO ══ -->
+<div id="register-page" class="view">
+  <div class="auth-orb auth-orb-1"></div>
+  <div class="auth-orb auth-orb-2"></div>
+  <div class="auth-card">
+    <div class="auth-logo">Médi<span>Ka</span></div>
+    <div class="auth-title">Cria a tua conta</div>
+    <div class="auth-subtitle">Grátis para sempre no plano básico</div>
+
+    <div class="error-msg" id="register-error"></div>
+    <div class="success-msg" id="register-success"></div>
+
+    <button class="btn btn-google" onclick="loginGoogle()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      Registar com Google
+    </button>
+
+    <div class="divider">ou</div>
+
+    <div class="form-group">
+      <label class="form-label">Nome completo</label>
+      <input type="text" class="form-input" id="register-name" placeholder="Ex: João Bento">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="register-email" placeholder="o.teu@email.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="register-password" placeholder="Mínimo 6 caracteres">
+    </div>
+
+    <div class="form-group" style="display:flex;align-items:center;gap:10px;background:var(--cream);padding:12px;border-radius:10px">
+      <input type="checkbox" id="register-as-doctor" style="width:18px;height:18px;accent-color:var(--teal)">
+      <label for="register-as-doctor" style="font-size:14px;cursor:pointer">Registar como <strong>Médico parceiro</strong> 👨‍⚕️</label>
+    </div>
+    <button class="btn-submit" id="register-btn" onclick="registerEmail()">Criar conta grátis</button>
+
+    <div class="auth-switch">
+      Já tens conta? <button type="button" onclick="showView('login-page')" style="background:none;border:none;color:var(--teal);cursor:pointer;font-weight:600;font-size:14px;padding:0">Entra aqui</button>
+      &nbsp;·&nbsp; <button type="button" onclick="showView('landing')" style="background:none;border:none;color:#6b7280;cursor:pointer;font-size:14px;padding:0">← Voltar ao site</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP PACIENTE ══ -->
+<div id="app-patient" class="view" style="flex-direction:row">
+  <div class="sidebar">
+    <button type="button" onclick="showView('landing')" style="background:none;border:none;cursor:pointer;padding:0 24px;font-family:inherit"><div class="logo">Médi<span>Ka</span></div></button>
+    <nav class="sidebar-nav">
+      <div class="sidebar-item active" onclick="switchTab(this,'tab-home')"><span>🏠</span> Início</div>
+      <div class="sidebar-item" onclick="switchTab(this,'tab-doctors')"><span>👨‍⚕️</span> Médicos</div>
+      <div class="sidebar-item" onclick="switchTab(this,'tab-appointments')"><span>📅</span> Consultas</div>
+      <div class="sidebar-item" onclick="switchTab(this,'tab-records')"><span>📋</span> Historial</div>
+      <div class="sidebar-item" onclick="switchTab(this,'tab-prescriptions')"><span>💊</span> Receitas</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar" id="user-avatar">?</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Utilizador</div>
+          <div class="user-role">Plano Básico</div>
+        </div>
+      </div>
+      <div class="sidebar-item" onclick="logout()" style="margin-top:8px;color:rgba(255,255,255,0.3)"><span>🚪</span> Sair</div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- HOME -->
+    <div id="tab-home">
+      <div class="page-header">
+        <div>
+          <div class="page-title" id="welcome-msg">Bom dia 👋</div>
+          <div class="page-subtitle">Como te sentes hoje?</div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button type="button" class="btn" style="background:var(--teal-pale);color:var(--teal);border:1px solid rgba(13,148,136,0.2)" onclick="openMulticaixa('Família','5900')">💳 Upgrade</button>
+          <button type="button" class="btn btn-primary" onclick="openBooking()">+ Nova Consulta</button>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="icon-bg" style="background:#d1fae5">🩺</div><div class="label">Consultas este mês</div><div class="value" id="patient-consult-count">—</div><div class="change" id="patient-consult-change" style="color:#9ca3af">A carregar...</div></div>
+        <div class="stat-card"><div class="icon-bg" style="background:#fef3c7">⏱️</div><div class="label">Próxima consulta</div><div class="value" id="patient-next-time" style="font-size:22px;margin-top:4px">—</div><div class="change" id="patient-next-doctor" style="color:#92400e">—</div></div>
+        <div class="stat-card"><div class="icon-bg" style="background:#e0e7ff">💊</div><div class="label">Receitas activas</div><div class="value" id="patient-prescriptions">—</div><div class="change" id="patient-prescriptions-sub" style="color:#9ca3af">A carregar...</div></div>
+        <div class="stat-card" style="cursor:pointer;border:1px solid var(--teal)" onclick="openMulticaixa('Família','5900')">
+          <div class="icon-bg" style="background:#d1fae5">💳</div>
+          <div class="label">Plano actual</div>
+          <div class="value" id="patient-plan-label" style="font-size:22px;margin-top:4px">Básico</div>
+          <div class="change" style="color:var(--teal)">⬆️ Fazer upgrade →</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Próximas consultas</div>
+        <div class="appt-list">
+          <div class="appt-item">
+            <div class="appt-time-block"><div class="appt-time">10h</div><div class="appt-date">Amanhã</div></div>
+            <div class="appt-info"><div class="appt-doc">Dr. António Santos</div><div class="appt-spec">Cardiologia · 30 min</div></div>
+            <span class="appt-status status-confirmed">Confirmada</span>
+            <button class="btn btn-primary" style="padding:8px 16px;font-size:12px" onclick="openConsultation('Dr. António Santos')">Entrar</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Médicos recomendados</div>
+        <div class="doctors-grid" style="margin-top:0">
+          <div class="doctor-card" onclick="openBookingFor('Dr. Luís Calembela','Clínica Geral')">
+            <div class="doctor-header"><div class="doctor-avatar" style="background:#d1fae5">👨‍⚕️</div><div><div class="doctor-name">Dr. Luís Calembela</div><div class="doctor-spec">Clínica Geral</div><div class="doctor-rating">⭐ 5.0</div></div></div>
+            <span class="availability-badge avail-green">● Disponível hoje</span>
+          </div>
+          <div class="doctor-card" onclick="openBookingFor('Dra. Conceição Neto','Clínica Geral')">
+            <div class="doctor-header"><div class="doctor-avatar" style="background:#fce7f3">👩‍⚕️</div><div><div class="doctor-name">Dra. Conceição Neto</div><div class="doctor-spec">Clínica Geral</div><div class="doctor-rating">⭐ 4.9</div></div></div>
+            <span class="availability-badge avail-green">● Disponível hoje</span>
+          </div>
+          <div class="doctor-card" onclick="openBookingFor('Dr. António Santos','Cardiologia')">
+            <div class="doctor-header"><div class="doctor-avatar" style="background:#dbeafe">👨‍⚕️</div><div><div class="doctor-name">Dr. António Santos</div><div class="doctor-spec">Cardiologia</div><div class="doctor-rating">⭐ 4.8</div></div></div>
+            <span class="availability-badge avail-yellow">● Amanhã</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCTORS -->
+    <div id="tab-doctors" style="display:none">
+      <div class="page-header"><div><div class="page-title">Médicos</div><div class="page-subtitle">180+ especialistas disponíveis</div></div></div>
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+        <input class="form-input" id="doctor-search" placeholder="🔍 Pesquisar médico..." style="max-width:300px" oninput="filterDoctors()">
+        <select class="form-select" id="doctor-specialty-filter" style="max-width:180px" onchange="filterDoctors()"><option value="">Todas especialidades</option><option>Clínica Geral</option><option>Cardiologia</option><option>Pediatria</option><option>Ginecologia</option><option>Dermatologia</option></select>
+      </div>
+      <div class="doctors-grid" id="doctors-grid">
+        <div class="doctor-card" data-name="Dr. Luís Calembela" data-spec="Clínica Geral" onclick="openBookingFor('Dr. Luís Calembela','Clínica Geral')"><div class="doctor-header"><div class="doctor-avatar" style="background:#d1fae5">👨‍⚕️</div><div><div class="doctor-name">Dr. Luís Calembela</div><div class="doctor-spec">Clínica Geral · Luanda</div><div class="doctor-rating">⭐ 5.0 (42)</div></div></div><div class="doctor-info"><span>🎓 Médico Certificado</span><span>💲 3.500 Kz</span></div><div style="margin-top:12px"><span class="availability-badge avail-green">● Disponível hoje</span></div></div>
+        <div class="doctor-card" data-name="Dra. Conceição Neto" data-spec="Clínica Geral" onclick="openBookingFor('Dra. Conceição Neto','Clínica Geral')"><div class="doctor-header"><div class="doctor-avatar" style="background:#fce7f3">👩‍⚕️</div><div><div class="doctor-name">Dra. Conceição Neto</div><div class="doctor-spec">Clínica Geral · Luanda</div><div class="doctor-rating">⭐ 4.9 (127)</div></div></div><div class="doctor-info"><span>🎓 15 anos exp.</span><span>💲 3.500 Kz</span></div><div style="margin-top:12px"><span class="availability-badge avail-green">● Disponível hoje</span></div></div>
+        <div class="doctor-card" data-name="Dr. António Santos" data-spec="Cardiologia" onclick="openBookingFor('Dr. António Santos','Cardiologia')"><div class="doctor-header"><div class="doctor-avatar" style="background:#dbeafe">👨‍⚕️</div><div><div class="doctor-name">Dr. António Santos</div><div class="doctor-spec">Cardiologia · Benguela</div><div class="doctor-rating">⭐ 4.8 (203)</div></div></div><div class="doctor-info"><span>🎓 22 anos exp.</span><span>💲 6.000 Kz</span></div><div style="margin-top:12px"><span class="availability-badge avail-yellow">● Disponível amanhã</span></div></div>
+        <div class="doctor-card" data-name="Dra. Maria Lopes" data-spec="Pediatria" onclick="openBookingFor('Dra. Maria Lopes','Pediatria')"><div class="doctor-header"><div class="doctor-avatar" style="background:#d1fae5">👩‍⚕️</div><div><div class="doctor-name">Dra. Maria Lopes</div><div class="doctor-spec">Pediatria · Huambo</div><div class="doctor-rating">⭐ 5.0 (88)</div></div></div><div class="doctor-info"><span>🎓 10 anos exp.</span><span>💲 4.200 Kz</span></div><div style="margin-top:12px"><span class="availability-badge avail-green">● Disponível hoje</span></div></div>
+        <div class="doctor-card" data-name="Dra. Filomena Gaspar" data-spec="Ginecologia" onclick="openBookingFor('Dra. Filomena Gaspar','Ginecologia')"><div class="doctor-header"><div class="doctor-avatar" style="background:#fce7f3">👩‍⚕️</div><div><div class="doctor-name">Dra. Filomena Gaspar</div><div class="doctor-spec">Ginecologia · Luanda</div><div class="doctor-rating">⭐ 4.9 (155)</div></div></div><div class="doctor-info"><span>🎓 18 anos exp.</span><span>💲 5.500 Kz</span></div><div style="margin-top:12px"><span class="availability-badge avail-green">● Disponível hoje</span></div></div>
+        <div class="doctor-card" data-name="Dra. Ana Paulina" data-spec="Dermatologia" onclick="openBookingFor('Dra. Ana Paulina','Dermatologia')"><div class="doctor-header"><div class="doctor-avatar" style="background:#fef3c7">👩‍⚕️</div><div><div class="doctor-name">Dra. Ana Paulina</div><div class="doctor-spec">Dermatologia · Luanda</div><div class="doctor-rating">⭐ 4.7 (64)</div></div></div><div class="doctor-info"><span>🎓 12 anos exp.</span><span>💲 4.800 Kz</span></div><div style="margin-top:12px"><span class="availability-badge avail-green">● Disponível hoje</span></div></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div id="tab-appointments" style="display:none">
+      <div class="page-header"><div><div class="page-title">As minhas consultas</div></div><button class="btn btn-primary" onclick="openBooking()">+ Marcar</button></div>
+      <div class="appt-list" id="appt-list-real">
+        <p style="color:#9ca3af;font-size:14px;padding:12px">A carregar consultas...</p>
+      </div>
+    </div>
+
+    <!-- RECORDS -->
+    <div id="tab-records" style="display:none">
+      <div class="page-title" style="margin-bottom:20px">Historial Médico</div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">Perfil de Saúde</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:20px">
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Tipo Sanguíneo</label>
+            <select class="form-select" id="blood-type">
+              <option value="">Seleccionar</option>
+              <option>A+</option><option>A-</option>
+              <option>B+</option><option>B-</option>
+              <option>AB+</option><option>AB-</option>
+              <option>O+</option><option>O-</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Peso (kg)</label>
+            <input type="number" class="form-input" id="weight" placeholder="Ex: 74">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Altura (cm)</label>
+            <input type="number" class="form-input" id="height" placeholder="Ex: 176">
+          </div>
+          <div class="form-group" style="margin:0">
+            <label class="form-label">Data de nascimento</label>
+            <input type="date" class="form-input" id="birthdate">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alergias conhecidas</label>
+          <input type="text" class="form-input" id="allergies" placeholder="Ex: Penicilina, Ibuprofeno">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Doenças crónicas</label>
+          <input type="text" class="form-input" id="chronic" placeholder="Ex: Hipertensão, Diabetes">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Medicação actual</label>
+          <input type="text" class="form-input" id="medication" placeholder="Ex: Losartana 50mg/dia">
+        </div>
+        <div id="profile-msg" style="display:none;margin-bottom:12px"></div>
+        <button class="btn btn-primary" onclick="saveHealthProfile()" id="save-profile-btn">
+          💾 Guardar perfil de saúde
+        </button>
+      </div>
+    </div>
+
+    <!-- PRESCRIPTIONS -->
+    <div id="tab-prescriptions" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <div class="page-title">Receitas Médicas</div>
+        <button type="button" class="btn btn-primary" onclick="openMulticaixa('Família','5900')" style="font-size:13px">💳 Assinar Plano Família</button>
+      </div>
+      <div class="card" style="border-left:4px solid var(--teal)"><div style="font-weight:700;font-size:16px">Losartana Potássica 50mg</div><div style="font-size:13px;color:#6b7280;margin-top:4px">1 comprimido/dia · Em jejum</div><div style="margin-top:16px;font-size:12px;color:#9ca3af">Emitida por Dra. Conceição Neto · Válida até 5 Dez 2025</div><button class="btn" style="margin-top:12px;padding:8px 16px;font-size:12px;background:var(--teal-pale);color:var(--teal);border:none;border-radius:8px;cursor:pointer" onclick="showToast('📲 QR Code enviado para o teu telemóvel!')">Mostrar QR para farmácia</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ADMIN ══ -->
+<div id="app-admin" class="view" style="flex-direction:row">
+<style>
+.admin-sidebar { width:220px; background:var(--ink); color:white; display:flex; flex-direction:column; padding:24px 0; flex-shrink:0; }
+.admin-sidebar .logo { padding:0 20px; font-size:22px; color:white; margin-bottom:8px; }
+.admin-version { padding:0 20px; font-size:11px; color:rgba(255,255,255,0.3); margin-bottom:24px; }
+.admin-nav { display:flex; flex-direction:column; gap:2px; padding:0 10px; flex:1; }
+.admin-nav-section { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:rgba(255,255,255,0.25); padding:16px 12px 6px; }
+.admin-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:500; color:rgba(255,255,255,0.5); transition:all .15s; }
+.admin-item:hover { background:rgba(255,255,255,0.06); color:white; }
+.admin-item.active { background:var(--teal); color:white; }
+.admin-badge { background:var(--red); color:white; font-size:10px; font-weight:700; padding:2px 6px; border-radius:50px; margin-left:auto; }
+.admin-content { flex:1; overflow-y:auto; background:#f8fafc; }
+.admin-topbar { background:white; border-bottom:1px solid var(--cream-dark); padding:16px 28px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:10; }
+.admin-topbar-title { font-family:'Instrument Serif',serif; font-size:24px; color:var(--ink); }
+.admin-topbar-right { display:flex; align-items:center; gap:12px; }
+.admin-page { padding:24px 28px; display:none; }
+.admin-page.active { display:block; }
+.a-kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.a-kpi { background:white; border:1px solid var(--cream-dark); border-radius:14px; padding:20px; position:relative; overflow:hidden; }
+.a-kpi-icon { font-size:28px; margin-bottom:12px; }
+.a-kpi-label { font-size:12px; color:#9ca3af; font-weight:500; margin-bottom:4px; }
+.a-kpi-value { font-family:'Instrument Serif',serif; font-size:36px; color:var(--ink); }
+.a-kpi-trend { font-size:12px; margin-top:6px; }
+.a-kpi-bar { position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--cream-dark); }
+.a-kpi-bar-fill { height:100%; background:var(--teal); border-radius:0 2px 2px 0; }
+.a-card { background:white; border:1px solid var(--cream-dark); border-radius:14px; margin-bottom:20px; overflow:hidden; }
+.a-card-head { padding:16px 20px; border-bottom:1px solid var(--cream-dark); display:flex; justify-content:space-between; align-items:center; }
+.a-card-head h3 { font-size:15px; font-weight:700; color:var(--ink); }
+.a-table { width:100%; border-collapse:collapse; }
+.a-table th { font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.5px; padding:12px 20px; text-align:left; background:#f8fafc; border-bottom:1px solid var(--cream-dark); }
+.a-table td { padding:14px 20px; font-size:13px; border-bottom:1px solid #f1f5f9; color:var(--ink); }
+.a-table tr:last-child td { border-bottom:none; }
+.a-table tr:hover td { background:#f8fafc; }
+.a-status { padding:4px 10px; border-radius:50px; font-size:11px; font-weight:700; }
+.a-status-active { background:#d1fae5; color:#065f46; }
+.a-status-pending { background:#fef3c7; color:#92400e; }
+.a-status-inactive { background:#fee2e2; color:#991b1b; }
+.a-status-paid { background:#e0e7ff; color:#3730a3; }
+.a-btn { padding:6px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; transition:all .15s; }
+.a-btn-teal { background:var(--teal-pale); color:var(--teal); }
+.a-btn-red { background:#fee2e2; color:#991b1b; }
+.a-btn-dark { background:var(--ink); color:white; }
+.a-search { display:flex; gap:10px; padding:16px 20px; border-bottom:1px solid var(--cream-dark); }
+.a-search input { flex:1; padding:9px 14px; border-radius:8px; border:1px solid var(--cream-dark); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; }
+.a-search select { padding:9px 14px; border-radius:8px; border:1px solid var(--cream-dark); font-size:13px; font-family:'DM Sans',sans-serif; outline:none; background:white; }
+.a-chart { display:flex; align-items:flex-end; gap:8px; height:120px; padding:16px 20px; }
+.a-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.a-bar { width:100%; border-radius:4px 4px 0 0; background:var(--teal); opacity:0.8; transition:opacity .2s; min-height:4px; }
+.a-bar:hover { opacity:1; }
+.a-bar-label { font-size:10px; color:#9ca3af; }
+.a-bar-val { font-size:10px; font-weight:700; color:var(--teal); }
+.a-settings-row { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid var(--cream-dark); }
+.a-settings-label { font-size:14px; font-weight:600; }
+.a-settings-desc { font-size:12px; color:#9ca3af; margin-top:2px; }
+.a-toggle { width:44px; height:24px; background:var(--teal); border-radius:50px; position:relative; cursor:pointer; transition:background .2s; }
+.a-toggle::after { content:''; position:absolute; width:18px; height:18px; background:white; border-radius:50%; top:3px; right:3px; transition:right .2s; }
+.a-toggle.off { background:#e2e8f0; }
+.a-toggle.off::after { right:23px; }
+@media(max-width:768px) { .admin-sidebar{display:none;} .a-kpi-grid{grid-template-columns:repeat(2,1fr);} }
+</style>
+
+  <div class="admin-sidebar">
+    <button type="button" onclick="showView('landing')" style="background:none;border:none;cursor:pointer;padding:0 20px;font-family:inherit"><div class="logo">Médi<span style="color:var(--teal-light)">Ka</span></div></button>
+    <div class="admin-version">Admin v2.0 · Angola</div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Principal</div>
+      <div class="admin-item active" onclick="switchAdminTab(this,'atab-dashboard')">📊 Dashboard</div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-doctors')">👨‍⚕️ Médicos <span class="admin-badge">180</span></div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-patients')">👥 Pacientes <span class="admin-badge">2.4K</span></div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-appointments')">📅 Consultas <span class="admin-badge">12</span></div>
+      <div class="admin-nav-section">Financeiro</div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-revenue')">💰 Receitas</div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-payouts')">💸 Pagamentos médicos</div>
+      <div class="admin-nav-section">Sistema</div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-plans')">📦 Planos & Preços</div>
+      <div class="admin-item" onclick="switchAdminTab(this,'atab-settings')">⚙️ Configurações</div>
+    </nav>
+    <div style="padding:10px">
+      <div class="admin-item" onclick="showView('landing')">🌐 Ver site</div>
+      <div class="admin-item" onclick="logout()">🚪 Sair</div>
+    </div>
+  </div>
+
+  <div class="admin-content">
+    <div class="admin-topbar">
+      <div class="admin-topbar-title" id="admin-page-title">Dashboard</div>
+      <div class="admin-topbar-right">
+        <div style="font-size:12px;color:#9ca3af">🟢 Sistema operacional</div>
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">A</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="admin-page active" id="atab-dashboard">
+      <div class="a-kpi-grid">
+        <div class="a-kpi">
+          <div class="a-kpi-icon">💰</div>
+          <div class="a-kpi-label">Receitas totais (Kz)</div>
+          <div class="a-kpi-value">14,2M</div>
+          <div class="a-kpi-trend" style="color:var(--teal)">↑ 23% vs mês passado</div>
+          <div class="a-kpi-bar"><div class="a-kpi-bar-fill" style="width:71%"></div></div>
+        </div>
+        <div class="a-kpi">
+          <div class="a-kpi-icon">🩺</div>
+          <div class="a-kpi-label">Consultas realizadas</div>
+          <div class="a-kpi-value">847</div>
+          <div class="a-kpi-trend" style="color:var(--teal)">↑ 18% vs mês passado</div>
+          <div class="a-kpi-bar"><div class="a-kpi-bar-fill" style="width:85%"></div></div>
+        </div>
+        <div class="a-kpi">
+          <div class="a-kpi-icon">👥</div>
+          <div class="a-kpi-label">Pacientes activos</div>
+          <div class="a-kpi-value">2.412</div>
+          <div class="a-kpi-trend" style="color:var(--teal)">↑ 41% vs mês passado</div>
+          <div class="a-kpi-bar"><div class="a-kpi-bar-fill" style="width:62%"></div></div>
+        </div>
+        <div class="a-kpi">
+          <div class="a-kpi-icon">⭐</div>
+          <div class="a-kpi-label">Satisfação média</div>
+          <div class="a-kpi-value">4.8</div>
+          <div class="a-kpi-trend" style="color:var(--teal)">↑ 0.1 vs mês passado</div>
+          <div class="a-kpi-bar"><div class="a-kpi-bar-fill" style="width:96%"></div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px">
+        <div class="a-card">
+          <div class="a-card-head"><h3>📈 Receitas mensais (Kz)</h3><span style="font-size:12px;color:#9ca3af">Últimos 6 meses</span></div>
+          <div class="a-chart">
+            <div class="a-bar-wrap"><div class="a-bar-val">8,1M</div><div class="a-bar" style="height:55%"></div><div class="a-bar-label">Jan</div></div>
+            <div class="a-bar-wrap"><div class="a-bar-val">9,4M</div><div class="a-bar" style="height:64%"></div><div class="a-bar-label">Fev</div></div>
+            <div class="a-bar-wrap"><div class="a-bar-val">10,2M</div><div class="a-bar" style="height:70%"></div><div class="a-bar-label">Mar</div></div>
+            <div class="a-bar-wrap"><div class="a-bar-val">11,5M</div><div class="a-bar" style="height:79%"></div><div class="a-bar-label">Abr</div></div>
+            <div class="a-bar-wrap"><div class="a-bar-val">11,8M</div><div class="a-bar" style="height:81%"></div><div class="a-bar-label">Mai</div></div>
+            <div class="a-bar-wrap"><div class="a-bar-val">14,2M</div><div class="a-bar" style="height:97%;opacity:1"></div><div class="a-bar-label">Jun</div></div>
+          </div>
+        </div>
+        <div class="a-card">
+          <div class="a-card-head"><h3>🏥 Por especialidade</h3></div>
+          <div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Clínica Geral</span><span style="font-weight:700">38%</span></div><div style="height:6px;background:var(--cream-dark);border-radius:3px"><div style="width:38%;height:100%;background:var(--teal);border-radius:3px"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Cardiologia</span><span style="font-weight:700">22%</span></div><div style="height:6px;background:var(--cream-dark);border-radius:3px"><div style="width:22%;height:100%;background:#6366f1;border-radius:3px"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Pediatria</span><span style="font-weight:700">18%</span></div><div style="height:6px;background:var(--cream-dark);border-radius:3px"><div style="width:18%;height:100%;background:var(--amber);border-radius:3px"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Ginecologia</span><span style="font-weight:700">14%</span></div><div style="height:6px;background:var(--cream-dark);border-radius:3px"><div style="width:14%;height:100%;background:#ec4899;border-radius:3px"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Outras</span><span style="font-weight:700">8%</span></div><div style="height:6px;background:var(--cream-dark);border-radius:3px"><div style="width:8%;height:100%;background:#9ca3af;border-radius:3px"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="a-card">
+        <div class="a-card-head"><h3>🔔 Actividade recente</h3><button class="a-btn a-btn-teal" onclick="showToast('✅ Marcado como lido')">Marcar tudo lido</button></div>
+        <div style="display:flex;flex-direction:column">
+          <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;gap:12px;align-items:center"><span style="font-size:20px">👨‍⚕️</span><div><div style="font-size:13px;font-weight:600">Novo médico registado</div><div style="font-size:12px;color:#9ca3af">Dr. Paulo Nkosi — Neurologia · há 5 min</div></div><span class="a-status a-status-pending" style="margin-left:auto">Pendente aprovação</span></div>
+          <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;gap:12px;align-items:center"><span style="font-size:20px">💳</span><div><div style="font-size:13px;font-weight:600">Novo assinante — Plano Família</div><div style="font-size:12px;color:#9ca3af">Ana Ferreira · 5.900 Kz · há 12 min</div></div><span class="a-status a-status-active" style="margin-left:auto">Pago</span></div>
+          <div style="padding:14px 20px;border-bottom:1px solid #f1f5f9;display:flex;gap:12px;align-items:center"><span style="font-size:20px">⭐</span><div><div style="font-size:13px;font-weight:600">Nova avaliação 5 estrelas</div><div style="font-size:12px;color:#9ca3af">Dra. Conceição Neto · há 28 min</div></div><span class="a-status a-status-active" style="margin-left:auto">5 ★</span></div>
+          <div style="padding:14px 20px;display:flex;gap:12px;align-items:center"><span style="font-size:20px">🩺</span><div><div style="font-size:13px;font-weight:600">Consulta concluída</div><div style="font-size:12px;color:#9ca3af">Dr. António Santos + João Bento · há 45 min</div></div><span class="a-status a-status-active" style="margin-left:auto">Concluída</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MÉDICOS -->
+    <div class="admin-page" id="atab-doctors">
+      <div class="a-card">
+        <div class="a-card-head">
+          <h3>👨‍⚕️ Gestão de Médicos</h3>
+          <button class="a-btn a-btn-dark" onclick="showToast('➕ Formulário de convite enviado!')">+ Convidar médico</button>
+        </div>
+        <div class="a-search">
+          <input placeholder="🔍 Pesquisar médico...">
+          <select><option>Todas especialidades</option><option>Clínica Geral</option><option>Cardiologia</option><option>Pediatria</option></select>
+          <select><option>Todos os estados</option><option>Activo</option><option>Pendente</option><option>Suspenso</option></select>
+        </div>
+        <table class="a-table">
+          <thead><tr><th>Médico</th><th>Especialidade</th><th>Consultas</th><th>Ganhos (Kz)</th><th>Rating</th><th>Estado</th><th>Acções</th></tr></thead>
+          <tbody>
+            <tr id="doc-row-1"><td><strong>Dra. Conceição Neto</strong><br><span style="font-size:11px;color:#9ca3af">conceicao@email.com</span></td><td>Clínica Geral</td><td>127</td><td>406.400</td><td>⭐ 4.9</td><td><span class="a-status a-status-active">Activo</span></td><td><div style="display:flex;gap:6px"><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil aberto')">Ver</button><button class="a-btn a-btn-red" onclick="adminDeleteDoctor('doc-row-1','Dra. Conceição Neto')">Eliminar</button></div></td></tr>
+            <tr id="doc-row-2"><td><strong>Dr. António Santos</strong><br><span style="font-size:11px;color:#9ca3af">antonio@email.com</span></td><td>Cardiologia</td><td>203</td><td>1.218.000</td><td>⭐ 4.8</td><td><span class="a-status a-status-active">Activo</span></td><td><div style="display:flex;gap:6px"><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil aberto')">Ver</button><button class="a-btn a-btn-red" onclick="adminDeleteDoctor('doc-row-2','Dr. António Santos')">Eliminar</button></div></td></tr>
+            <tr id="doc-row-3"><td><strong>Dr. Paulo Nkosi</strong><br><span style="font-size:11px;color:#9ca3af">paulo@email.com</span></td><td>Neurologia</td><td>0</td><td>0</td><td>—</td><td><span class="a-status a-status-pending">Pendente</span></td><td><div style="display:flex;gap:6px"><button class="a-btn a-btn-dark" onclick="adminApproveDoctor('doc-row-3','Dr. Paulo Nkosi')">Aprovar</button><button class="a-btn a-btn-red" onclick="adminDeleteDoctor('doc-row-3','Dr. Paulo Nkosi')">Eliminar</button></div></td></tr>
+            <tr id="doc-row-4"><td><strong>Dra. Maria Lopes</strong><br><span style="font-size:11px;color:#9ca3af">maria@email.com</span></td><td>Pediatria</td><td>88</td><td>369.600</td><td>⭐ 5.0</td><td><span class="a-status a-status-active">Activo</span></td><td><div style="display:flex;gap:6px"><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil aberto')">Ver</button><button class="a-btn a-btn-red" onclick="adminDeleteDoctor('doc-row-4','Dra. Maria Lopes')">Eliminar</button></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PACIENTES -->
+    <div class="admin-page" id="atab-patients">
+      <div class="a-card">
+        <div class="a-card-head"><h3>👥 Gestão de Pacientes</h3><button class="a-btn a-btn-teal" onclick="showToast('📊 Exportado para Excel!')">Exportar lista</button></div>
+        <div class="a-search">
+          <input placeholder="🔍 Pesquisar paciente...">
+          <select><option>Todos os planos</option><option>Grátis</option><option>Família</option><option>Empresas</option></select>
+          <select><option>Todas províncias</option><option>Luanda</option><option>Benguela</option><option>Huambo</option></select>
+        </div>
+        <table class="a-table">
+          <thead><tr><th>Paciente</th><th>Plano</th><th>Consultas</th><th>Província</th><th>Membro desde</th><th>Estado</th><th>Acções</th></tr></thead>
+          <tbody>
+            <tr><td><strong>João Bento</strong><br><span style="font-size:11px;color:#9ca3af">txbento20@gmail.com</span></td><td>Família</td><td>3</td><td>Benguela</td><td>Abr 2025</td><td><span class="a-status a-status-active">Activo</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil do paciente')">Ver</button></td></tr>
+            <tr><td><strong>Ana Ferreira</strong><br><span style="font-size:11px;color:#9ca3af">ana@email.com</span></td><td>Família</td><td>7</td><td>Luanda</td><td>Jan 2025</td><td><span class="a-status a-status-active">Activo</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil do paciente')">Ver</button></td></tr>
+            <tr><td><strong>Manuel Silva</strong><br><span style="font-size:11px;color:#9ca3af">manuel@email.com</span></td><td>Grátis</td><td>1</td><td>Huambo</td><td>Mai 2025</td><td><span class="a-status a-status-active">Activo</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil do paciente')">Ver</button></td></tr>
+            <tr><td><strong>Beatriz Neto</strong><br><span style="font-size:11px;color:#9ca3af">beatriz@email.com</span></td><td>Família</td><td>12</td><td>Luanda</td><td>Fev 2025</td><td><span class="a-status a-status-active">Activo</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('👁️ Perfil do paciente')">Ver</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CONSULTAS -->
+    <div class="admin-page" id="atab-appointments">
+      <div class="a-card">
+        <div class="a-card-head"><h3>📅 Todas as Consultas</h3><button class="a-btn a-btn-teal" onclick="showToast('📊 Exportado!')">Exportar</button></div>
+        <div class="a-search">
+          <input placeholder="🔍 Pesquisar...">
+          <select><option>Todos os estados</option><option>Confirmada</option><option>Concluída</option><option>Cancelada</option></select>
+        </div>
+        <table class="a-table">
+          <thead><tr><th>Paciente</th><th>Médico</th><th>Especialidade</th><th>Data/Hora</th><th>Valor (Kz)</th><th>Estado</th><th>Acções</th></tr></thead>
+          <tbody>
+            <tr><td>João Bento</td><td>Dra. Conceição Neto</td><td>Clínica Geral</td><td>5 Jun · 09:00</td><td>3.500</td><td><span class="a-status a-status-active">Concluída</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('📄 Relatório aberto')">Relatório</button></td></tr>
+            <tr><td>Ana Ferreira</td><td>Dr. António Santos</td><td>Cardiologia</td><td>5 Jun · 10:30</td><td>6.000</td><td><span class="a-status a-status-active">Concluída</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('📄 Relatório aberto')">Relatório</button></td></tr>
+            <tr><td>Manuel Silva</td><td>Dra. Filomena Gaspar</td><td>Ginecologia</td><td>5 Jun · 11:00</td><td>5.500</td><td><span class="a-status a-status-pending">Confirmada</span></td><td><button class="a-btn a-btn-red" onclick="showToast('❌ Consulta cancelada')">Cancelar</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- RECEITAS -->
+    <div class="admin-page" id="atab-revenue">
+      <div class="a-kpi-grid">
+        <div class="a-kpi"><div class="a-kpi-icon">💰</div><div class="a-kpi-label">Receita bruta (Jun)</div><div class="a-kpi-value">14,2M</div><div class="a-kpi-trend" style="color:var(--teal)">Kz</div></div>
+        <div class="a-kpi"><div class="a-kpi-icon">💸</div><div class="a-kpi-label">Pago a médicos (Jun)</div><div class="a-kpi-value">11,4M</div><div class="a-kpi-trend" style="color:var(--red)">80% das consultas</div></div>
+        <div class="a-kpi"><div class="a-kpi-icon">🏦</div><div class="a-kpi-label">Lucro líquido (Jun)</div><div class="a-kpi-value">2,8M</div><div class="a-kpi-trend" style="color:var(--teal)">20% de comissão</div></div>
+        <div class="a-kpi"><div class="a-kpi-icon">📦</div><div class="a-kpi-label">Assinaturas activas</div><div class="a-kpi-value">412</div><div class="a-kpi-trend" style="color:var(--teal)">↑ 38 este mês</div></div>
+      </div>
+      <div class="a-card">
+        <div class="a-card-head"><h3>💳 Assinaturas por plano</h3></div>
+        <table class="a-table">
+          <thead><tr><th>Plano</th><th>Assinantes</th><th>Preço/mês</th><th>Receita mensal</th><th>% do total</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Grátis</strong></td><td>1.247</td><td>0 Kz</td><td>0 Kz</td><td>0%</td></tr>
+            <tr><td><strong>Família</strong></td><td>398</td><td>5.900 Kz</td><td>2.348.200 Kz</td><td>87%</td></tr>
+            <tr><td><strong>Empresas</strong></td><td>14</td><td>variável</td><td>350.000 Kz</td><td>13%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PAGAMENTOS MÉDICOS -->
+    <div class="admin-page" id="atab-payouts">
+      <div class="a-card">
+        <div class="a-card-head"><h3>💸 Pagamentos a médicos — Junho 2025</h3><button class="a-btn a-btn-dark" onclick="showToast('✅ Pagamentos processados!')">Processar todos</button></div>
+        <table class="a-table">
+          <thead><tr><th>Médico</th><th>Consultas</th><th>Valor bruto</th><th>Comissão MédiKa (20%)</th><th>A pagar (80%)</th><th>Estado</th><th>Acção</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Dra. Conceição Neto</strong></td><td>127</td><td>444.500 Kz</td><td>88.900 Kz</td><td><strong>355.600 Kz</strong></td><td><span class="a-status a-status-pending">Pendente</span></td><td><button class="a-btn a-btn-dark" onclick="showToast('✅ Transferência iniciada!')">Pagar</button></td></tr>
+            <tr><td><strong>Dr. António Santos</strong></td><td>87</td><td>522.000 Kz</td><td>104.400 Kz</td><td><strong>417.600 Kz</strong></td><td><span class="a-status a-status-pending">Pendente</span></td><td><button class="a-btn a-btn-dark" onclick="showToast('✅ Transferência iniciada!')">Pagar</button></td></tr>
+            <tr><td><strong>Dra. Maria Lopes</strong></td><td>76</td><td>319.200 Kz</td><td>63.840 Kz</td><td><strong>255.360 Kz</strong></td><td><span class="a-status a-status-paid">Pago</span></td><td><button class="a-btn a-btn-teal" onclick="showToast('📄 Comprovativo aberto')">Comprovativo</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PLANOS -->
+    <div class="admin-page" id="atab-plans">
+      <div class="a-card">
+        <div class="a-card-head"><h3>📦 Gestão de Planos & Preços</h3></div>
+        <div style="padding:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+          <div style="border:1px solid var(--cream-dark);border-radius:12px;padding:20px">
+            <div style="font-weight:700;font-size:16px;margin-bottom:16px">Plano Básico</div>
+            <div class="form-group"><label class="form-label">Preço (Kz/mês)</label><input type="number" class="form-input" value="0" style="padding:8px"></div>
+            <div class="form-group"><label class="form-label">Consultas/mês</label><input type="number" class="form-input" value="1" style="padding:8px"></div>
+            <button class="a-btn a-btn-teal" style="width:100%;padding:10px" onclick="showToast('✅ Plano Básico actualizado!')">Guardar</button>
+          </div>
+          <div style="border:2px solid var(--teal);border-radius:12px;padding:20px">
+            <div style="font-weight:700;font-size:16px;margin-bottom:4px">Plano Família ⭐</div>
+            <div style="font-size:11px;color:var(--teal);margin-bottom:12px">Mais popular</div>
+            <div class="form-group"><label class="form-label">Preço (Kz/mês)</label><input type="number" class="form-input" value="5900" style="padding:8px"></div>
+            <div class="form-group"><label class="form-label">Membros máx.</label><input type="number" class="form-input" value="5" style="padding:8px"></div>
+            <button class="a-btn a-btn-dark" style="width:100%;padding:10px" onclick="showToast('✅ Plano Família actualizado!')">Guardar</button>
+          </div>
+          <div style="border:1px solid var(--cream-dark);border-radius:12px;padding:20px">
+            <div style="font-weight:700;font-size:16px;margin-bottom:16px">Plano Empresas</div>
+            <div class="form-group"><label class="form-label">Preço base (Kz/mês)</label><input type="number" class="form-input" value="50000" style="padding:8px"></div>
+            <div class="form-group"><label class="form-label">Por colaborador (Kz)</label><input type="number" class="form-input" value="2000" style="padding:8px"></div>
+            <button class="a-btn a-btn-teal" style="width:100%;padding:10px" onclick="showToast('✅ Plano Empresas actualizado!')">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIGURAÇÕES -->
+    <div class="admin-page" id="atab-settings">
+      <div class="a-card">
+        <div class="a-card-head"><h3>⚙️ Configurações do sistema</h3></div>
+        <div class="a-settings-row"><div><div class="a-settings-label">Modo de manutenção</div><div class="a-settings-desc">Desactiva o acesso ao site temporariamente</div></div><div class="a-toggle off" onclick="this.classList.toggle('off');showToast('⚙️ Configuração actualizada')"></div></div>
+        <div class="a-settings-row"><div><div class="a-settings-label">Notificações por email</div><div class="a-settings-desc">Enviar emails automáticos de confirmação</div></div><div class="a-toggle" onclick="this.classList.toggle('off');showToast('⚙️ Configuração actualizada')"></div></div>
+        <div class="a-settings-row"><div><div class="a-settings-label">Aprovação automática de médicos</div><div class="a-settings-desc">Médicos entram sem aprovação manual</div></div><div class="a-toggle off" onclick="this.classList.toggle('off');showToast('⚙️ Configuração actualizada')"></div></div>
+        <div class="a-settings-row"><div><div class="a-settings-label">Registo de pacientes aberto</div><div class="a-settings-desc">Qualquer pessoa pode criar conta</div></div><div class="a-toggle" onclick="this.classList.toggle('off');showToast('⚙️ Configuração actualizada')"></div></div>
+        <div class="a-settings-row"><div><div class="a-settings-label">Comissão MédiKa (%)</div><div class="a-settings-desc">Percentagem retida em cada consulta</div></div><input type="number" value="20" class="form-input" style="width:80px;padding:8px" onchange="showToast('✅ Comissão actualizada para '+this.value+'%')"></div>
+        <div class="a-settings-row"><div><div class="a-settings-label">Email de suporte</div><div class="a-settings-desc">Email público de contacto</div></div><input type="email" value="suporte@medikaangola.ao" class="form-input" style="width:240px;padding:8px"></div>
+        <div style="padding:16px 20px"><button class="btn btn-primary" onclick="showToast('✅ Configurações guardadas!')">💾 Guardar configurações</button></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- BOTTOM NAV MOBILE -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <div class="bottom-nav-item active" onclick="switchTabMobile(this,'tab-home')"><span>🏠</span>Início</div>
+    <div class="bottom-nav-item" onclick="switchTabMobile(this,'tab-doctors')"><span>👨‍⚕️</span>Médicos</div>
+    <div class="bottom-nav-item" onclick="switchTabMobile(this,'tab-appointments')"><span>📅</span>Consultas</div>
+    <div class="bottom-nav-item" onclick="switchTabMobile(this,'tab-records')"><span>📋</span>Historial</div>
+    <div class="bottom-nav-item" onclick="switchTabMobile(this,'tab-prescriptions')"><span>💊</span>Receitas</div>
+  </nav>
+
+<!-- ══ APP MÉDICO ══ -->
+<div id="app-doctor" class="view" style="flex-direction:row">
+
+<style>
+/* ══ PORTAL MÉDICO — DESIGN EXCLUSIVO ══ */
+#app-doctor {
+  background: #0d1117;
+  color: white;
+  min-height: 100vh;
+}
+.doc-sidebar {
+  width: 260px;
+  background: #161b22;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0;
+  flex-shrink: 0;
+}
+.doc-logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  color: white;
+  padding: 0 24px;
+  margin-bottom: 8px;
+}
+.doc-logo span { color: #14b8a6; }
+.doc-logo-badge {
+  display: inline-block;
+  background: rgba(20,184,166,0.15);
+  border: 1px solid rgba(20,184,166,0.3);
+  color: #14b8a6;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 50px;
+  margin: 0 24px 28px;
+  display: block;
+  width: fit-content;
+}
+.doc-nav { display: flex; flex-direction: column; gap: 2px; padding: 0 12px; flex: 1; }
+.doc-nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px; border-radius: 10px;
+  cursor: pointer; font-size: 14px; font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  transition: all .2s;
+  border: 1px solid transparent;
+}
+.doc-nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+.doc-nav-item.active {
+  background: rgba(20,184,166,0.12);
+  border-color: rgba(20,184,166,0.25);
+  color: #14b8a6;
+}
+.doc-nav-item .nav-icon { font-size: 17px; width: 20px; text-align: center; }
+.doc-footer { padding: 16px 12px 0; border-top: 1px solid rgba(255,255,255,0.06); margin: 0 12px; }
+.doc-user-pill {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  margin-bottom: 8px;
+}
+.doc-avatar-circle {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg,#0d9488,#14b8a6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+  color: white;
+}
+.doc-user-info { flex: 1; min-width: 0; }
+.doc-user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; }
+.doc-user-role { font-size: 11px; color: rgba(255,255,255,0.35); }
+.doc-logout {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; border-radius: 8px;
+  cursor: pointer; font-size: 13px;
+  color: rgba(255,255,255,0.3);
+  transition: all .2s;
+}
+.doc-logout:hover { color: #ef4444; background: rgba(239,68,68,0.08); }
+
+/* MAIN */
+.doc-main { flex: 1; overflow-y: auto; padding: 36px; display: flex; flex-direction: column; gap: 24px; }
+
+/* HEADER */
+.doc-page-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 4px;
+}
+.doc-greeting { font-family: 'Instrument Serif',serif; font-size: 30px; color: white; }
+.doc-subtitle { font-size: 13px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+
+/* KPI CARDS */
+.doc-kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+.doc-kpi {
+  background: #161b22;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px; padding: 20px;
+  transition: border-color .2s;
+}
+.doc-kpi:hover { border-color: rgba(20,184,166,0.3); }
+.doc-kpi-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-bottom: 14px;
+}
+.doc-kpi-label { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.doc-kpi-value { font-family: 'Instrument Serif',serif; font-size: 32px; color: white; }
+.doc-kpi-change { font-size: 12px; color: #14b8a6; margin-top: 4px; }
+
+/* SECTION CARD */
+.doc-card {
+  background: #161b22;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px; padding: 24px;
+}
+.doc-card-title {
+  font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: rgba(255,255,255,0.35);
+  margin-bottom: 18px;
+}
+
+/* APPOINTMENT ITEMS */
+.doc-appt-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 16px; border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  margin-bottom: 10px; flex-wrap: wrap;
+  transition: border-color .2s;
+}
+.doc-appt-item:hover { border-color: rgba(20,184,166,0.2); }
+.doc-appt-time { font-family: 'Instrument Serif',serif; font-size: 22px; color: #14b8a6; min-width: 44px; text-align: center; }
+.doc-appt-date { font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; }
+.doc-patient-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.doc-appt-info { flex: 1; min-width: 120px; }
+.doc-appt-patient { font-size: 14px; font-weight: 600; color: white; }
+.doc-appt-reason { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.doc-badge {
+  padding: 4px 12px; border-radius: 50px;
+  font-size: 11px; font-weight: 700;
+}
+.doc-badge-green { background: rgba(20,184,166,0.15); color: #14b8a6; border: 1px solid rgba(20,184,166,0.3); }
+.doc-badge-yellow { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.doc-badge-blue { background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); }
+.doc-btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none; font-family: 'DM Sans',sans-serif;
+  transition: all .2s;
+}
+.doc-btn-primary { background: #0d9488; color: white; }
+.doc-btn-primary:hover { background: #14b8a6; }
+.doc-btn-ghost { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); }
+.doc-btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+/* PATIENT CARDS */
+.doc-patient-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 14px; }
+.doc-patient-card {
+  background: #161b22; border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; padding: 18px; transition: border-color .2s;
+}
+.doc-patient-card:hover { border-color: rgba(20,184,166,0.3); }
+.doc-patient-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.doc-patient-avatar {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.doc-patient-name { font-size: 15px; font-weight: 600; color: white; }
+.doc-patient-meta { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.doc-patient-actions { display: flex; gap: 8px; }
+
+/* SCHEDULE */
+.doc-schedule-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06); border-radius: 10px;
+  margin-bottom: 10px; flex-wrap: wrap; gap: 10px;
+}
+.doc-day-name { font-size: 14px; font-weight: 600; color: white; width: 100px; }
+.doc-time-inputs { display: flex; gap: 8px; align-items: center; }
+.doc-time-input {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px; padding: 6px 10px; color: white;
+  font-size: 13px; font-family: 'DM Sans',sans-serif; width: 90px;
+  outline: none;
+}
+.doc-time-input:focus { border-color: #14b8a6; }
+.doc-check { width: 18px; height: 18px; accent-color: #14b8a6; cursor: pointer; }
+
+/* EARNINGS */
+.doc-earn-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 20px; }
+.doc-earn-card {
+  background: #161b22; border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; padding: 18px;
+}
+.doc-earn-label { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.doc-earn-value { font-family: 'Instrument Serif',serif; font-size: 28px; color: white; }
+.doc-earn-sub { font-size: 12px; color: #14b8a6; margin-top: 4px; }
+.doc-table {
+  background: #161b22; border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px; overflow: hidden;
+}
+.doc-table-head { padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.doc-table-head h3 { font-size: 14px; font-weight: 600; color: white; }
+.doc-table table { width: 100%; border-collapse: collapse; }
+.doc-table th { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 20px; text-align: left; background: rgba(255,255,255,0.02); }
+.doc-table td { padding: 13px 20px; font-size: 13px; color: rgba(255,255,255,0.7); border-top: 1px solid rgba(255,255,255,0.05); }
+.doc-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* MOBILE BOTTOM NAV MÉDICO */
+#doc-bottom-nav { background: #161b22; border-top: 1px solid rgba(255,255,255,0.08); }
+#doc-bottom-nav .bottom-nav-item { color: rgba(255,255,255,0.35); }
+#doc-bottom-nav .bottom-nav-item.active { color: #14b8a6; }
+
+/* EMPTY STATE */
+.doc-empty { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.3); }
+.doc-empty-icon { font-size: 40px; margin-bottom: 12px; }
+.doc-empty-text { font-size: 14px; }
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-main { padding: 20px 16px 100px !important; }
+  .doc-kpi-row { grid-template-columns: repeat(2,1fr); }
+  .doc-earn-row { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+
+  <!-- SIDEBAR MÉDICO -->
+  <div class="doc-sidebar">
+    <div class="doc-logo">Médi<span>Ka</span></div>
+    <div class="doc-logo-badge">Portal Médico</div>
+    <nav class="doc-nav">
+      <div class="doc-nav-item active" onclick="switchDocTab(this,'dtab-home')"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="doc-nav-item" onclick="switchDocTab(this,'dtab-appointments')"><span class="nav-icon">📅</span> Consultas</div>
+      <div class="doc-nav-item" onclick="switchDocTab(this,'dtab-patients')"><span class="nav-icon">👥</span> Pacientes</div>
+      <div class="doc-nav-item" onclick="switchDocTab(this,'dtab-schedule')"><span class="nav-icon">🕐</span> Horários</div>
+      <div class="doc-nav-item" onclick="switchDocTab(this,'dtab-earnings')"><span class="nav-icon">💰</span> Ganhos</div>
+    </nav>
+    <div class="doc-footer">
+      <div class="doc-user-pill">
+        <div class="doc-avatar-circle" id="doc-avatar">D</div>
+        <div class="doc-user-info">
+          <div class="doc-user-name" id="doc-name">Dr. Médico</div>
+          <div class="doc-user-role">Médico Parceiro · MédiKa</div>
+        </div>
+      </div>
+      <div class="doc-logout" onclick="logout()">🚪 Terminar sessão</div>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <div class="doc-main">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="dtab-home">
+      <div class="doc-page-header">
+        <div>
+          <div class="doc-greeting" id="doc-welcome">Bom dia, Doutor 👋</div>
+          <div class="doc-subtitle" id="doc-date-line">A carregar dados...</div>
+        </div>
+        <button class="doc-btn doc-btn-primary" style="font-size:13px;padding:10px 20px" onclick="switchDocTab(document.querySelector('.doc-nav-item:nth-child(5)'),'dtab-schedule')">⏰ Gerir horários</button>
+      </div>
+
+      <div class="doc-kpi-row">
+        <div class="doc-kpi">
+          <div class="doc-kpi-icon" style="background:rgba(20,184,166,0.12)">🩺</div>
+          <div class="doc-kpi-label">Consultas hoje</div>
+          <div class="doc-kpi-value" id="doc-stat-today">—</div>
+          <div class="doc-kpi-change" id="doc-stat-today-sub">A carregar...</div>
+        </div>
+        <div class="doc-kpi">
+          <div class="doc-kpi-icon" style="background:rgba(245,158,11,0.12)">⏳</div>
+          <div class="doc-kpi-label">A aguardar</div>
+          <div class="doc-kpi-value" id="doc-stat-pending">—</div>
+          <div class="doc-kpi-change" style="color:#f59e0b" id="doc-stat-pending-sub">Pendentes</div>
+        </div>
+        <div class="doc-kpi">
+          <div class="doc-kpi-icon" style="background:rgba(99,102,241,0.12)">📋</div>
+          <div class="doc-kpi-label">Total consultas</div>
+          <div class="doc-kpi-value" id="doc-stat-total">—</div>
+          <div class="doc-kpi-change">Histórico completo</div>
+        </div>
+        <div class="doc-kpi">
+          <div class="doc-kpi-icon" style="background:rgba(239,68,68,0.12)">⭐</div>
+          <div class="doc-kpi-label">Avaliação</div>
+          <div class="doc-kpi-value">4.9</div>
+          <div class="doc-kpi-change">127 avaliações</div>
+        </div>
+      </div>
+
+      <div class="doc-card">
+        <div class="doc-card-title">Próximas consultas marcadas</div>
+        <div id="doc-upcoming-list">
+          <div class="doc-empty"><div class="doc-empty-icon">📅</div><div class="doc-empty-text">A carregar consultas...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONSULTAS ── -->
+    <div id="dtab-appointments" style="display:none">
+      <div class="doc-page-header">
+        <div>
+          <div class="doc-greeting">Consultas</div>
+          <div class="doc-subtitle">Histórico completo dos teus pacientes</div>
+        </div>
+      </div>
+      <div class="doc-card">
+        <div class="doc-card-title">Todas as consultas</div>
+        <div id="doc-all-appts">
+          <div class="doc-empty"><div class="doc-empty-icon">📅</div><div class="doc-empty-text">A carregar...</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PACIENTES ── -->
+    <div id="dtab-patients" style="display:none">
+      <div class="doc-page-header">
+        <div>
+          <div class="doc-greeting">Pacientes</div>
+          <div class="doc-subtitle">Pacientes que já consultaram contigo</div>
+        </div>
+      </div>
+      <div id="doc-patients-grid" class="doc-patient-grid">
+        <div class="doc-empty" style="grid-column:1/-1"><div class="doc-empty-icon">👥</div><div class="doc-empty-text">A carregar pacientes...</div></div>
+      </div>
+    </div>
+
+    <!-- ── HORÁRIOS ── -->
+    <div id="dtab-schedule" style="display:none">
+      <div class="doc-page-header">
+        <div>
+          <div class="doc-greeting">Horários</div>
+          <div class="doc-subtitle">Define a tua disponibilidade semanal</div>
+        </div>
+      </div>
+      <div class="doc-card">
+        <div class="doc-card-title">Disponibilidade semanal</div>
+        <div class="doc-schedule-row"><div class="doc-day-name">Segunda</div><div class="doc-time-inputs"><input type="time" value="08:00" class="doc-time-input"><span style="color:rgba(255,255,255,0.3)">—</span><input type="time" value="17:00" class="doc-time-input"><input type="checkbox" checked class="doc-check"></div></div>
+        <div class="doc-schedule-row"><div class="doc-day-name">Terça</div><div class="doc-time-inputs"><input type="time" value="08:00" class="doc-time-input"><span style="color:rgba(255,255,255,0.3)">—</span><input type="time" value="17:00" class="doc-time-input"><input type="checkbox" checked class="doc-check"></div></div>
+        <div class="doc-schedule-row"><div class="doc-day-name">Quarta</div><div class="doc-time-inputs"><input type="time" value="08:00" class="doc-time-input"><span style="color:rgba(255,255,255,0.3)">—</span><input type="time" value="13:00" class="doc-time-input"><input type="checkbox" checked class="doc-check"></div></div>
+        <div class="doc-schedule-row"><div class="doc-day-name">Quinta</div><div class="doc-time-inputs"><input type="time" value="08:00" class="doc-time-input"><span style="color:rgba(255,255,255,0.3)">—</span><input type="time" value="17:00" class="doc-time-input"><input type="checkbox" checked class="doc-check"></div></div>
+        <div class="doc-schedule-row"><div class="doc-day-name">Sexta</div><div class="doc-time-inputs"><input type="time" value="08:00" class="doc-time-input"><span style="color:rgba(255,255,255,0.3)">—</span><input type="time" value="17:00" class="doc-time-input"><input type="checkbox" checked class="doc-check"></div></div>
+        <div class="doc-schedule-row"><div class="doc-day-name" style="color:rgba(255,255,255,0.4)">Sábado</div><div class="doc-time-inputs"><input type="time" value="08:00" class="doc-time-input" style="opacity:0.4"><span style="color:rgba(255,255,255,0.3)">—</span><input type="time" value="12:00" class="doc-time-input" style="opacity:0.4"><input type="checkbox" class="doc-check"></div></div>
+        <button class="doc-btn doc-btn-primary" style="margin-top:16px;padding:12px 24px;font-size:14px" onclick="saveDocSchedule()">💾 Guardar horários</button>
+      </div>
+    </div>
+
+    <!-- ── GANHOS ── -->
+    <div id="dtab-earnings" style="display:none">
+      <div class="doc-page-header">
+        <div>
+          <div class="doc-greeting">Ganhos</div>
+          <div class="doc-subtitle">Resumo financeiro da tua actividade</div>
+        </div>
+      </div>
+      <div class="doc-earn-row">
+        <div class="doc-earn-card"><div class="doc-earn-label">Este mês</div><div class="doc-earn-value" id="doc-earn-month">—</div><div class="doc-earn-sub">↑ 23% vs mês passado</div></div>
+        <div class="doc-earn-card"><div class="doc-earn-label">Total acumulado</div><div class="doc-earn-value">284.000 Kz</div><div class="doc-earn-sub">Desde Jan 2025</div></div>
+        <div class="doc-earn-card"><div class="doc-earn-label">Consultas pagas</div><div class="doc-earn-value" id="doc-earn-count">—</div><div class="doc-earn-sub">Este mês</div></div>
+        <div class="doc-earn-card"><div class="doc-earn-label">Próx. pagamento</div><div class="doc-earn-value" style="font-size:20px;margin-top:6px">30 Mai</div><div class="doc-earn-sub">Transferência bancária</div></div>
+      </div>
+      <div class="doc-table">
+        <div class="doc-table-head"><h3>Histórico de pagamentos</h3></div>
+        <table>
+          <thead><tr><th>Data</th><th>Paciente</th><th>Especialidade</th><th>Valor</th><th>Estado</th></tr></thead>
+          <tbody id="doc-earn-table">
+            <tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px">A carregar...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV MOBILE MÉDICO -->
+  <nav class="bottom-nav" id="doc-bottom-nav">
+    <div class="bottom-nav-item active" onclick="switchDocTabMobile(this,'dtab-home')"><span>📊</span>Início</div>
+    <div class="bottom-nav-item" onclick="switchDocTabMobile(this,'dtab-appointments')"><span>📅</span>Consultas</div>
+    <div class="bottom-nav-item" onclick="switchDocTabMobile(this,'dtab-patients')"><span>👥</span>Pacientes</div>
+    <div class="bottom-nav-item" onclick="switchDocTabMobile(this,'dtab-schedule')"><span>🕐</span>Horários</div>
+    <div class="bottom-nav-item" onclick="switchDocTabMobile(this,'dtab-earnings')"><span>💰</span>Ganhos</div>
+  </nav>
+</div>
+
+</div>
+
+<!-- PRESCRIPTION MODAL -->
+<div class="modal-overlay" id="prescription-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePrescriptionModal()">✕</button>
+    <h2>Emitir Receita Médica</h2>
+    <p>Preenche os dados da receita digital</p>
+    <div class="form-group"><label class="form-label">Paciente</label><input type="text" class="form-input" placeholder="Nome do paciente"></div>
+    <div class="form-group"><label class="form-label">Medicamento</label><input type="text" class="form-input" placeholder="Ex: Amoxicilina 500mg"></div>
+    <div class="form-group"><label class="form-label">Posologia</label><input type="text" class="form-input" placeholder="Ex: 3x/dia durante 7 dias"></div>
+    <div class="form-group"><label class="form-label">Observações</label><textarea class="form-textarea" placeholder="Instruções adicionais..."></textarea></div>
+    <div class="form-group"><label class="form-label">Validade</label><input type="date" class="form-input"></div>
+    <button class="btn-submit" onclick="emitirReceita()">📄 Emitir receita digital</button>
+  </div>
+</div>
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()">✕</button>
+    <h2>Marcar Consulta</h2>
+    <p id="booking-subtitle">Preenche os dados para agendar</p>
+    <div class="form-group"><label class="form-label">Especialidade</label>
+      <select class="form-select" id="booking-specialty" onchange="updateDoctorsBySpecialty()">
+        <option value="Clínica Geral">Clínica Geral</option>
+        <option value="Cardiologia">Cardiologia</option>
+        <option value="Pediatria">Pediatria</option>
+        <option value="Ginecologia">Ginecologia</option>
+        <option value="Dermatologia">Dermatologia</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Médico</label>
+      <select class="form-select" id="booking-doctor">
+        <option value="Dr. Luís Calembela">Dr. Luís Calembela — Clínica Geral (3.500 Kz)</option>
+        <option value="Dra. Conceição Neto">Dra. Conceição Neto — Clínica Geral (3.500 Kz)</option>
+      </select>
+    </div>
+    <div style="background:var(--teal-pale);border:1px solid rgba(13,148,136,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--teal);margin-bottom:16px" id="booking-price-info">💰 Valor da consulta: <strong>3.500 Kz</strong></div>
+    <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="booking-date"></div>
+    <div class="form-group"><label class="form-label">Horário — 24h disponível</label><div class="time-slots" style="grid-template-columns:repeat(6,1fr)">
+      <div class="time-slot selected" onclick="selectSlot(this)">00:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">02:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">04:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">06:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">08:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">09:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">10:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">11:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">12:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">13:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">14:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">15:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">16:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">17:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">18:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">19:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">20:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">21:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">22:00</div>
+      <div class="time-slot" onclick="selectSlot(this)">23:00</div>
+    </div></div>
+    <div class="form-group"><label class="form-label">Motivo / Sintomas</label><textarea class="form-textarea" placeholder="Descreve o motivo da consulta..."></textarea></div>
+    <button class="btn-submit" onclick="confirmBooking()">✅ Confirmar marcação</button>
+  </div>
+</div>
+
+<!-- CONSULTATION VIEW — DAILY.CO REAL VIDEO -->
+<div id="consultation-view">
+  <style>
+    #daily-frame { width:100%; height:100%; border:none; flex:1; }
+    .consult-header {
+      background:#0f172a; color:white; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-bottom:1px solid rgba(255,255,255,0.08); flex-shrink:0;
+    }
+    .consult-header-left { display:flex; align-items:center; gap:12px; }
+    .consult-header-logo { font-family:'Instrument Serif',serif; font-size:20px; }
+    .consult-header-logo span { color:var(--teal-light); }
+    .consult-info { font-size:13px; color:rgba(255,255,255,0.6); }
+    .consult-info strong { color:white; }
+    .consult-timer-top {
+      background:rgba(13,148,136,0.2); border:1px solid rgba(20,184,166,0.3);
+      color:var(--teal-light); padding:6px 16px; border-radius:50px;
+      font-size:13px; font-weight:600;
+    }
+    .consult-footer {
+      background:#0f172a; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      border-top:1px solid rgba(255,255,255,0.08); flex-shrink:0; flex-wrap:wrap; gap:10px;
+    }
+    .consult-actions { display:flex; gap:10px; }
+    .consult-note { font-size:12px; color:rgba(255,255,255,0.4); }
+  </style>
+
+  <div class="consult-header">
+    <div class="consult-header-left">
+      <div class="consult-header-logo">Médi<span>Ka</span></div>
+      <div class="consult-info">
+        <strong id="consult-doctor-name">Dr. António Santos</strong>
+        <span> · Cardiologia · Consulta por vídeo</span>
+      </div>
+    </div>
+    <div class="consult-timer-top" id="timer-top">⏱️ 00:00</div>
+  </div>
+
+  <iframe id="daily-frame" allow="camera; microphone; fullscreen; display-capture; autoplay" allowfullscreen></iframe>
+
+  <div class="consult-footer">
+    <div class="consult-note">🔒 Consulta segura e encriptada · MédiKa Angola</div>
+    <div class="consult-actions">
+      <button class="btn" style="background:#1e293b;color:white;border:none;padding:10px 20px;border-radius:10px;cursor:pointer" onclick="showToast('📋 Notas guardadas')">📋 Notas</button>
+      <button class="btn" style="background:var(--red);color:white;border:none;padding:10px 20px;border-radius:10px;cursor:pointer" onclick="endConsultation()">📵 Terminar consulta</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-msg">✅ Operação realizada!</span></div>
+
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, serverTimestamp, doc, deleteDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDK6ObQY7oryNAAn6RT-a5PBhSzm6Z6-k0",
+    authDomain: "medika-angola-7cf3c.firebaseapp.com",
+    projectId: "medika-angola-7cf3c",
+    storageBucket: "medika-angola-7cf3c.firebasestorage.app",
+    messagingSenderId: "158742458728",
+    appId: "1:158742458728:web:41c1af679ed7195983e6dd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  window._auth = auth;
+  window._db = db;
+  window._provider = provider;
+  window._signInWithEmailAndPassword = signInWithEmailAndPassword;
+  window._createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+  window._signInWithPopup = signInWithPopup;
+  window._signOut = signOut;
+  window._updateProfile = updateProfile;
+  window._collection = collection;
+  window._addDoc = addDoc;
+  window._getDocs = getDocs;
+  window._query = query;
+  window._where = where;
+  window._orderBy = orderBy;
+  window._serverTimestamp = serverTimestamp;
+  window._doc = doc;
+  window._deleteDoc = deleteDoc;
+  window._setDoc = setDoc;
+  window._getDoc = getDoc;
+
+  // ⚠️ SEGURANÇA: Certifica-te de que as Firestore Security Rules estão configuradas.
+  // Regras recomendadas para produção (seguras):
+  // rules_version = '2';
+  // service cloud.firestore {
+  //   match /databases/{database}/documents {
+  //     match /users/{userId} { allow read, write: if request.auth.uid == userId; }
+  //     match /profiles/{userId} { allow read, write: if request.auth.uid == userId; }
+  //     match /appointments/{docId} {
+  //       allow read: if request.auth.uid == resource.data.userId || request.auth.uid == resource.data.doctorUid;
+  //       allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+  //       allow update, delete: if request.auth.uid == resource.data.userId;
+  //     }
+  //     match /prescriptions/{docId} {
+  //       allow read: if request.auth.uid == resource.data.userId || request.auth.uid == resource.data.doctorUid;
+  //       allow create: if request.auth != null;
+  //       allow update, delete: if request.auth.uid == resource.data.doctorUid;
+  //     }
+  //   }
+  // }
+
+  // ── CONTADORES EM TEMPO REAL NA LANDING PAGE ──
+  async function loadLandingStats() {
+    try {
+      const { collection: col, query: qry, where: whr, getDocs: gDocs } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+
+      // Contar médicos registados
+      const qDoctors = qry(col(db, 'users'), whr('role', '==', 'doctor'));
+      const snapDoctors = await gDocs(qDoctors);
+      const doctorCount = snapDoctors.size;
+      const docEl = document.getElementById('stat-doctors');
+      if (docEl) docEl.textContent = doctorCount > 0 ? doctorCount + '+' : '0';
+
+      // Contar pacientes registados
+      const qPatients = qry(col(db, 'users'), whr('role', '==', 'patient'));
+      const snapPatients = await gDocs(qPatients);
+      const patientCount = snapPatients.size;
+      const patEl = document.getElementById('stat-patients');
+      if (patEl) patEl.textContent = patientCount > 0 ? patientCount.toLocaleString('pt-PT') + '+' : '0';
+    } catch(e) {
+      // Se falhar (ex: sem permissão anónima), mostra valores padrão
+      const docEl = document.getElementById('stat-doctors');
+      if (docEl) docEl.textContent = '0';
+      const patEl2 = document.getElementById('stat-patients');
+      if (patEl2) patEl2.textContent = '0';
+    }
+  }
+  loadLandingStats();
+  window._loadLandingStats = loadLandingStats;
+
+  // Estado de autenticação
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const name = user.displayName || user.email.split('@')[0];
+      // Verificar role no Firestore
+      let role = 'patient';
+      try {
+        const { doc: docFn2, getDoc: getDocFn2 } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+        const snap2 = await getDocFn2(docFn2(db, 'users', user.uid));
+        if (snap2.exists()) role = snap2.data().role || 'patient';
+      } catch(e) {}
+      if (role === 'doctor') {
+        document.getElementById('doc-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('doc-name').textContent = name;
+        showView('app-doctor');
+        setTimeout(() => loadDoctorDashboard(user.uid, name), 100);
+      } else if (role === 'admin') {
+        showView('app-admin');
+      } else {
+        document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('user-display-name').textContent = name;
+        const horaOAC = new Date().getHours();
+        const saudOAC = horaOAC < 12 ? 'Bom dia' : horaOAC < 18 ? 'Boa tarde' : 'Boa noite';
+        document.getElementById('welcome-msg').textContent = `${saudOAC}, ${name.split(' ')[0]} 👋`;
+        if (user.email === 'txbento20@gmail.com') {
+          showView('app-admin');
+        } else {
+          showView('app-patient');
+          await loadAppointments(user.uid);
+          loadPatientDashboardStats(user.uid);
+        }
+      }
+    }
+  });
+
+  // Carregar consultas da base de dados
+  async function loadAppointments(uid) {
+    try {
+      const q = query(collection(db, 'appointments'), where('userId', '==', uid), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      const list = document.getElementById('appt-list-real');
+      if (!list) return;
+      if (snap.empty) { list.innerHTML = '<p style="color:#9ca3af;font-size:14px;padding:12px">Ainda não tens consultas marcadas.</p>'; return; }
+      list.innerHTML = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        list.innerHTML += `
+          <div class="appt-item">
+            <div class="appt-time-block"><div class="appt-time">${d.time}</div><div class="appt-date">${d.date}</div></div>
+            <div class="appt-info"><div class="appt-doc">${d.doctor}</div><div class="appt-spec">${d.specialty} · ${d.reason || 'Consulta marcada'}</div></div>
+            <span class="appt-status status-confirmed">Confirmada</span>
+            <button type="button" class="btn btn-primary" style="padding:8px 16px;font-size:12px;flex-shrink:0" onclick="openConsultation('${d.doctor}')">Entrar</button>
+          </div>`;
+      });
+    } catch(e) { console.log('Erro ao carregar consultas:', e); }
+  }
+
+  window._loadAppointments = loadAppointments;
+</script>
+
+<script>
+  // ── VIEWS ──
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    window.scrollTo(0,0);
+    // Show/hide bottom navs based on active view
+    const patientNav = document.getElementById('bottom-nav');
+    const doctorNav = document.getElementById('doc-bottom-nav');
+    if (patientNav) patientNav.style.display = (id === 'app-patient') ? 'grid' : 'none';
+    if (doctorNav) doctorNav.style.display = (id === 'app-doctor') ? 'grid' : 'none';
+  }
+
+  // ── TABS ──
+  function switchTab(el, tabId) {
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('#app-patient .main-content > div[id^="tab-"]').forEach(t => t.style.display='none');
+    const tab = document.getElementById(tabId);
+    if (tab) tab.style.display = 'block';
+  }
+
+  // ── AUTH ──
+  async function loginEmail() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const btn = document.getElementById('login-btn');
+    const err = document.getElementById('login-error');
+    err.classList.remove('show');
+    if (!email || !password) { err.textContent = 'Preenche o email e a password.'; err.classList.add('show'); return; }
+    btn.innerHTML = '<div class="loading-spinner"></div> A entrar...';
+    btn.disabled = true;
+    try {
+      const cred = await window._signInWithEmailAndPassword(window._auth, email, password);
+      const uid = cred.user.uid;
+      const name2 = cred.user.displayName || email.split('@')[0];
+      // Verificar role no Firestore
+      let role = 'patient';
+      try {
+        const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+        const snap = await getDoc(doc(window._db, 'users', uid));
+        if (snap.exists()) role = snap.data().role || 'patient';
+      } catch(e2) { console.log('Role não encontrado, usando paciente por defeito'); }
+      if (role === 'doctor') {
+        document.getElementById('doc-avatar').textContent = name2.charAt(0).toUpperCase();
+        document.getElementById('doc-name').textContent = name2;
+        showView('app-doctor');
+        showToast('✅ Bem-vindo ao portal médico!');
+        setTimeout(() => loadDoctorDashboard(uid, name2), 100);
+      } else if (role === 'admin') {
+        showView('app-admin');
+        showToast('✅ Bem-vindo ao painel de administração!');
+      } else {
+        document.getElementById('user-avatar').textContent = name2.charAt(0).toUpperCase();
+        document.getElementById('user-display-name').textContent = name2;
+        const hora2 = new Date().getHours();
+        const saud2 = hora2 < 12 ? 'Bom dia' : hora2 < 18 ? 'Boa tarde' : 'Boa noite';
+        document.getElementById('welcome-msg').textContent = `${saud2}, ${name2.split(' ')[0]} 👋`;
+        if (email === 'txbento20@gmail.com') {
+          showView('app-admin');
+          showToast('👑 Bem-vindo ao painel Admin, Tucho!');
+        } else {
+          showView('app-patient');
+          showToast('✅ Bem-vindo ao MédiKa!');
+          await window._loadAppointments(uid);
+          loadPatientDashboardStats(uid);
+        }
+      }
+    } catch(e) {
+      let msg = 'Email ou password incorrectos.';
+      if (e.code === 'auth/user-not-found') msg = 'Conta não encontrada. Cria uma conta primeiro.';
+      if (e.code === 'auth/wrong-password') msg = 'Password incorrecta. Tenta novamente.';
+      if (e.code === 'auth/invalid-credential') msg = 'Email ou password incorrectos.';
+      if (e.code === 'auth/too-many-requests') msg = 'Demasiadas tentativas. Aguarda uns minutos.';
+      err.textContent = msg; err.classList.add('show');
+    } finally {
+      btn.innerHTML = 'Entrar'; btn.disabled = false;
+    }
+  }
+
+  async function registerEmail() {
+    const name = document.getElementById('register-name').value.trim();
+    const email = document.getElementById('register-email').value.trim();
+    const password = document.getElementById('register-password').value;
+    const btn = document.getElementById('register-btn');
+    const err = document.getElementById('register-error');
+    const suc = document.getElementById('register-success');
+    err.classList.remove('show'); suc.classList.remove('show');
+    if (!name || !email || !password) { err.textContent = 'Preenche todos os campos.'; err.classList.add('show'); return; }
+    if (password.length < 6) { err.textContent = 'A password deve ter pelo menos 6 caracteres.'; err.classList.add('show'); return; }
+    btn.innerHTML = '<div class="loading-spinner"></div> A criar conta...'; btn.disabled = true;
+    try {
+      const cred = await window._createUserWithEmailAndPassword(window._auth, email, password);
+      await window._updateProfile(cred.user, { displayName: name });
+      // Check if registering as doctor
+      const isDoctor = document.getElementById('register-as-doctor') && document.getElementById('register-as-doctor').checked;
+      const role = isDoctor ? 'doctor' : 'patient';
+      // Guardar role no Firestore
+      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      await setDoc(doc(window._db, 'users', cred.user.uid), {
+        name: name,
+        email: email,
+        role: role,
+        createdAt: window._serverTimestamp()
+      });
+      if (isDoctor) {
+        document.getElementById('doc-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('doc-name').textContent = name;
+        showView('app-doctor');
+        showToast('🎉 Conta de médico criada! Bem-vindo ao MédiKa!');
+        setTimeout(() => loadDoctorDashboard(cred.user.uid, name), 100);
+        // Actualizar contador da landing
+        if (window._loadLandingStats) window._loadLandingStats();
+      } else {
+        document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('user-display-name').textContent = name;
+        const horaReg = new Date().getHours();
+        const saudReg = horaReg < 12 ? 'Bom dia' : horaReg < 18 ? 'Boa tarde' : 'Boa noite';
+        document.getElementById('welcome-msg').textContent = `${saudReg}, ${name.split(' ')[0]} 👋`;
+        showView('app-patient');
+        showToast('🎉 Conta criada com sucesso! Bem-vindo ao MédiKa!');
+        // Actualizar contador da landing
+        if (window._loadLandingStats) window._loadLandingStats();
+      }
+    } catch(e) {
+      let msg = 'Erro ao criar conta. Tenta novamente.';
+      if (e.code === 'auth/email-already-in-use') msg = 'Este email já está registado. Faz login.';
+      if (e.code === 'auth/invalid-email') msg = 'Email inválido. Verifica o formato.';
+      if (e.code === 'auth/weak-password') msg = 'Password demasiado fraca. Usa pelo menos 6 caracteres.';
+      err.textContent = msg; err.classList.add('show');
+    } finally {
+      btn.innerHTML = 'Criar conta grátis'; btn.disabled = false;
+    }
+  }
+
+  async function loginGoogle() {
+    try {
+      const cred = await window._signInWithPopup(window._auth, window._provider);
+      const user = cred.user;
+      const name = user.displayName || user.email.split('@')[0];
+      // Verificar se existe doc do utilizador, se não criar como paciente
+      let role = 'patient';
+      try {
+        const { doc, getDoc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+        const snap = await getDoc(doc(window._db, 'users', user.uid));
+        if (snap.exists()) {
+          role = snap.data().role || 'patient';
+        } else {
+          // Primeiro login com Google — criar registo de paciente
+          await setDoc(doc(window._db, 'users', user.uid), {
+            name: name,
+            email: user.email,
+            role: 'patient',
+            createdAt: window._serverTimestamp()
+          });
+        }
+      } catch(e2) { console.log('Erro ao verificar role Google:', e2); }
+
+      if (role === 'doctor') {
+        document.getElementById('doc-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('doc-name').textContent = name;
+        showView('app-doctor');
+        showToast('✅ Bem-vindo ao portal médico!');
+        setTimeout(() => loadDoctorDashboard(user.uid, name), 100);
+      } else if (role === 'admin') {
+        showView('app-admin');
+        showToast('✅ Bem-vindo ao painel de administração!');
+      } else {
+        document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('user-display-name').textContent = name;
+        const hora = new Date().getHours();
+        const saud = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+        document.getElementById('welcome-msg').textContent = `${saud}, ${name.split(' ')[0]} 👋`;
+        showView('app-patient');
+        showToast('✅ Bem-vindo ao MédiKa!');
+        await window._loadAppointments(user.uid);
+        loadPatientDashboardStats(user.uid);
+      }
+    } catch(e) {
+      if (e.code !== 'auth/popup-closed-by-user') {
+        showToast('❌ Erro ao entrar com Google. Tenta novamente.');
+      }
+    }
+  }
+
+  async function logout() {
+    await window._signOut(window._auth);
+    showView('landing');
+    showToast('👋 Sessão terminada. Até logo!');
+    if (window._loadLandingStats) window._loadLandingStats();
+  }
+
+  // ── BOOKING ──
+  // Preços por especialidade — definição única global (evita duplicação)
+  const SPECIALTY_PRICES = {
+    'Clínica Geral': 3500,
+    'Cardiologia': 6000,
+    'Pediatria': 4200,
+    'Ginecologia': 5500,
+    'Dermatologia': 4800
+  };
+
+  const DOCTORS_BY_SPECIALTY = {
+    'Clínica Geral':  [{ name: 'Dr. Luís Calembela', price: 3500 }, { name: 'Dra. Conceição Neto', price: 3500 }],
+    'Cardiologia':    [{ name: 'Dr. António Santos', price: 6000 }, { name: 'Dr. Hélder Neto', price: 6000 }],
+    'Pediatria':      [{ name: 'Dra. Maria Lopes', price: 4200 }, { name: 'Dra. Rosa Chikoka', price: 4200 }],
+    'Ginecologia':    [{ name: 'Dra. Filomena Gaspar', price: 5500 }, { name: 'Dra. Carla Mendes', price: 5500 }],
+    'Dermatologia':   [{ name: 'Dra. Ana Paulina', price: 4800 }, { name: 'Dr. Mário Cafussa', price: 4800 }],
+  };
+  function updateDoctorsBySpecialty() {
+    const spec = document.getElementById('booking-specialty').value;
+    const doctors = DOCTORS_BY_SPECIALTY[spec] || [];
+    const sel = document.getElementById('booking-doctor');
+    sel.innerHTML = doctors.map(d => `<option value="${d.name}">${d.name} — ${spec} (${d.price.toLocaleString('pt-PT')} Kz)</option>`).join('');
+    const price = doctors[0]?.price || 3500;
+    document.getElementById('booking-price-info').innerHTML = `💰 Valor da consulta: <strong>${price.toLocaleString('pt-PT')} Kz</strong>`;
+  }
+  function openBooking() {
+    updateDoctorsBySpecialty();
+    document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
+    document.getElementById('booking-subtitle').textContent = 'Preenche os dados para agendar a tua consulta';
+    document.getElementById('booking-modal').classList.add('open');
+  }
+  function openBookingFor(name, spec) {
+    document.getElementById('booking-specialty').value = spec;
+    updateDoctorsBySpecialty();
+    const opts = document.getElementById('booking-doctor').options;
+    for (let i = 0; i < opts.length; i++) { if (opts[i].value === name) { opts[i].selected = true; break; } }
+    document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
+    document.getElementById('booking-subtitle').textContent = `A marcar com ${name} · ${spec}`;
+    document.getElementById('booking-modal').classList.add('open');
+  }
+  function closeBooking() { document.getElementById('booking-modal').classList.remove('open'); }
+  function selectSlot(el) { if (el.classList.contains('busy')) return; document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected')); el.classList.add('selected'); }
+  async function confirmBooking() {
+    const user = window._auth.currentUser;
+    if (!user) { showToast('❌ Precisas de fazer login primeiro.'); return; }
+    const doctor = document.getElementById('booking-doctor').value;
+    const specialty = document.getElementById('booking-specialty').value;
+    const date = document.getElementById('booking-date').value;
+    const time = document.querySelector('.time-slot.selected')?.textContent || '08:00';
+    const reason = document.querySelector('#booking-modal .form-textarea').value;
+    const price = SPECIALTY_PRICES[specialty] || 3500;
+    if (!date) { showToast('❌ Escolhe uma data para a consulta.'); return; }
+    try {
+      // Guardar na base de dados
+      await window._addDoc(window._collection(window._db, 'appointments'), {
+        userId: user.uid,
+        userName: user.displayName || user.email,
+        doctor, specialty, date, time, reason,
+        price,
+        status: 'confirmed',
+        createdAt: window._serverTimestamp()
+      });
+
+      // Enviar email de confirmação
+      const patientName = user.displayName || user.email.split('@')[0];
+      const patientEmail = user.email;
+      try {
+        await emailjs.send('service_9lsqn5q', 'template_9zi8kne', {
+          patient_name: patientName,
+          to_email: patientEmail,
+          doctor: doctor,
+          specialty: specialty,
+          date: date,
+          time: time,
+          reason: reason || 'Consulta de rotina'
+        });
+        showToast('✅ Consulta marcada! Email de confirmação enviado!');
+      } catch(emailErr) {
+        // Mesmo que o email falhe, a consulta fica guardada
+        showToast('✅ Consulta marcada e guardada!');
+      }
+
+      closeBooking();
+      await window._loadAppointments(user.uid);
+      // Mudar para tab de consultas
+      const mobileBtn = document.querySelector('.bottom-nav-item:nth-child(3)');
+      if (mobileBtn) switchTabMobile(mobileBtn, 'tab-appointments');
+    } catch(e) {
+      console.error('Booking error:', e);
+      if (!navigator.onLine) {
+        showToast('❌ Sem ligação à internet. Verifica a tua rede e tenta novamente.');
+      } else {
+        showToast('❌ Erro ao guardar. Tenta novamente.');
+      }
+    }
+  }
+
+  // ── CONSULTA ──
+  let timerInterval, seconds = 0;
+
+  async function openConsultation(doctorName, appointmentId) {
+    // Sala única por consulta: usa o ID da consulta ou um slug do nome do médico
+    const roomSlug = appointmentId
+      ? appointmentId.slice(0, 12)
+      : (doctorName || 'geral').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16) + '-' + Date.now().toString(36);
+    const roomUrl = 'https://whereby.com/medikangola-' + roomSlug;
+    document.getElementById('daily-frame').src = roomUrl;
+    if (doctorName) document.getElementById('consult-doctor-name').textContent = doctorName;
+    document.getElementById('consultation-view').classList.add('open');
+    startTimer();
+    showToast('🎥 A conectar à sala de consulta...');
+  }
+
+  function endConsultation() {
+    document.getElementById('daily-frame').src = '';
+    document.getElementById('consultation-view').classList.remove('open');
+    clearInterval(timerInterval);
+    seconds = 0;
+    showToast('✅ Consulta terminada. Relatório enviado por email.');
+  }
+
+  function startTimer() {
+    seconds = 0;
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds/60)).padStart(2,'0');
+      const s = String(seconds%60).padStart(2,'0');
+      const timeStr = `⏱️ ${m}:${s}`;
+      const t = document.getElementById('timer-top');
+      if (t) t.textContent = timeStr;
+    }, 1000);
+  }
+
+  function sendMsg() {
+    const inp = document.getElementById('chat-in');
+    const text = inp.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('chat-msgs');
+    const div = document.createElement('div');
+    div.className = 'chat-msg sent';
+    div.innerHTML = `<div class="msg-sender">Você</div>${text}`;
+    msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight; inp.value = '';
+    setTimeout(() => { const rep = document.createElement('div'); rep.className = 'chat-msg recv'; rep.innerHTML = `<div class="msg-sender">Dr. Santos</div>Compreendido. Vou anotar isso.`; msgs.appendChild(rep); msgs.scrollTop = msgs.scrollHeight; }, 1200);
+  }
+
+  async function saveHealthProfile() {
+    const user = window._auth.currentUser;
+    if (!user) { showToast('❌ Precisas de fazer login.'); return; }
+    const btn = document.getElementById('save-profile-btn');
+    const msg = document.getElementById('profile-msg');
+    if (btn) { btn.textContent = '💾 A guardar...'; btn.disabled = true; }
+    try {
+      await window._setDoc(window._doc(window._db, 'profiles', user.uid), {
+        bloodType: document.getElementById('blood-type').value,
+        weight: document.getElementById('weight').value,
+        height: document.getElementById('height').value,
+        birthdate: document.getElementById('birthdate').value,
+        allergies: document.getElementById('allergies').value,
+        chronic: document.getElementById('chronic').value,
+        medication: document.getElementById('medication').value,
+        updatedAt: window._serverTimestamp()
+      }, { merge: true });
+      if (msg) {
+        msg.style.display = 'block';
+        msg.style.background = '#d1fae5';
+        msg.style.border = '1px solid #6ee7b7';
+        msg.style.color = '#065f46';
+        msg.style.padding = '10px 14px';
+        msg.style.borderRadius = '8px';
+        msg.style.fontSize = '13px';
+        msg.textContent = '✅ Perfil de saúde guardado com sucesso!';
+      }
+      showToast('✅ Perfil de saúde guardado!');
+    } catch(e) {
+      console.error('Save profile error:', e);
+      showToast('❌ Erro ao guardar: ' + e.message);
+    }
+    if (btn) { btn.textContent = '💾 Guardar perfil de saúde'; btn.disabled = false; }
+  }
+
+  
+  async function loadHealthProfile(uid) {
+    try {
+      const snap = await window._getDoc(window._doc(window._db, 'profiles', uid));
+      if (snap.exists()) {
+        const d = snap.data();
+        const el = (id) => document.getElementById(id);
+        if (el('blood-type')) el('blood-type').value = d.bloodType || '';
+        if (el('weight')) el('weight').value = d.weight || '';
+        if (el('height')) el('height').value = d.height || '';
+        if (el('birthdate')) el('birthdate').value = d.birthdate || '';
+        if (el('allergies')) el('allergies').value = d.allergies || '';
+        if (el('chronic')) el('chronic').value = d.chronic || '';
+        if (el('medication')) el('medication').value = d.medication || '';
+      }
+    } catch(e) { console.log('Perfil não encontrado:', e); }
+  }
+
+  // Carregar perfil quando abre o tab — sem recursão
+  const _origSwitchTab = switchTab;
+  window.switchTab = function(el, tabId) {
+    _origSwitchTab(el, tabId);
+    if (tabId === 'tab-records' && window._auth && window._auth.currentUser) {
+      loadHealthProfile(window._auth.currentUser.uid);
+    }
+    if (tabId === 'tab-appointments' && window._auth && window._auth.currentUser) {
+      window._loadAppointments(window._auth.currentUser.uid);
+    }
+  };
+
+
+  function switchTabMobile(el, tabId) {
+    document.querySelectorAll('.bottom-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    // also sync sidebar
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    const tabMap = {'tab-home':0,'tab-doctors':1,'tab-appointments':2,'tab-records':3,'tab-prescriptions':4};
+    sidebarItems.forEach(i => i.classList.remove('active'));
+    if (sidebarItems[tabMap[tabId]]) sidebarItems[tabMap[tabId]].classList.add('active');
+    document.querySelectorAll('#app-patient .main-content > div[id^="tab-"]').forEach(t => t.style.display='none');
+    const tab = document.getElementById(tabId);
+    if (tab) tab.style.display = 'block';
+    if (tabId === 'tab-records' && window._auth && window._auth.currentUser) {
+      loadHealthProfile(window._auth.currentUser.uid);
+    }
+    if (tabId === 'tab-appointments' && window._auth && window._auth.currentUser) {
+      window._loadAppointments(window._auth.currentUser.uid);
+    }
+  }
+
+
+
+
+  function openUnitel(plan, price) {
+    document.getElementById('unitel-plan-name').textContent = plan || 'Plano Família — mensal';
+    document.getElementById('unitel-price').textContent = price || '5.900 Kz';
+    document.getElementById('unitel-modal').classList.add('open');
+  }
+  function closeUnitel() {
+    document.getElementById('unitel-modal').classList.remove('open');
+  }
+  function confirmarPagamento() {
+    closeUnitel();
+    showToast('✅ Obrigado! O teu plano será activado em até 24 horas.');
+  }
+
+  function switchAdminTab(el, tabId) {
+    document.querySelectorAll('.admin-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(tabId);
+    if (page) page.classList.add('active');
+    const titles = {
+      'atab-dashboard': 'Dashboard',
+      'atab-doctors': 'Gestão de Médicos',
+      'atab-patients': 'Gestão de Pacientes',
+      'atab-appointments': 'Consultas',
+      'atab-revenue': 'Receitas',
+      'atab-payouts': 'Pagamentos a Médicos',
+      'atab-plans': 'Planos & Preços',
+      'atab-settings': 'Configurações'
+    };
+    const t = document.getElementById('admin-page-title');
+    if (t) t.textContent = titles[tabId] || 'Admin';
+  }
+
+  function switchDocTab(el, tabId) {
+    document.querySelectorAll('.doc-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('#app-doctor .doc-main > div[id^="dtab-"]').forEach(t => t.style.display='none');
+    const tab = document.getElementById(tabId);
+    if (tab) tab.style.display = 'block';
+    if (tabId === 'dtab-appointments' && window._docUid) loadDocAllAppts(window._docUid);
+    if (tabId === 'dtab-patients' && window._docUid) loadDocPatients(window._docUid);
+    if (tabId === 'dtab-earnings' && window._docUid) loadDocEarnings(window._docUid);
+  }
+
+  function switchDocTabMobile(el, tabId) {
+    document.querySelectorAll('#doc-bottom-nav .bottom-nav-item').forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('#app-doctor .doc-main > div[id^="dtab-"]').forEach(t => t.style.display='none');
+    const tab = document.getElementById(tabId);
+    if (tab) tab.style.display = 'block';
+    if (tabId === 'dtab-appointments' && window._docUid) loadDocAllAppts(window._docUid);
+    if (tabId === 'dtab-patients' && window._docUid) loadDocPatients(window._docUid);
+    if (tabId === 'dtab-earnings' && window._docUid) loadDocEarnings(window._docUid);
+  }
+
+  // ── PORTAL MÉDICO — CARREGAR DADOS DO FIRESTORE ──
+  async function loadDoctorDashboard(uid, name) {
+    window._docUid = uid;
+    // Atualizar data e saudação
+    const now = new Date();
+    const hora = now.getHours();
+    const saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    const firstName = name.split(' ')[0];
+    const el = document.getElementById('doc-welcome');
+    if (el) el.textContent = `${saudacao}, ${firstName} 👨‍⚕️`;
+    const dateEl = document.getElementById('doc-date-line');
+    if (dateEl) dateEl.textContent = now.toLocaleDateString('pt-PT', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+    try {
+      const { collection, query, where, getDocs, orderBy } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const db = window._db;
+      const docName = name;
+
+      // Buscar consultas marcadas com este médico pelo nome
+      const q = query(collection(db, 'appointments'), where('doctor', '==', docName), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      const appts = [];
+      snap.forEach(d => appts.push({id: d.id, ...d.data()}));
+
+      // Stats
+      const today = new Date().toISOString().split('T')[0];
+      const todayAppts = appts.filter(a => a.date === today);
+      const pendingAppts = appts.filter(a => a.status === 'confirmed');
+
+      const statToday = document.getElementById('doc-stat-today');
+      if (statToday) statToday.textContent = todayAppts.length;
+      const statTodaySub = document.getElementById('doc-stat-today-sub');
+      if (statTodaySub) statTodaySub.textContent = todayAppts.length === 1 ? '1 paciente hoje' : `${todayAppts.length} pacientes hoje`;
+      const statPending = document.getElementById('doc-stat-pending');
+      if (statPending) statPending.textContent = pendingAppts.length;
+      const statPendingSub = document.getElementById('doc-stat-pending-sub');
+      if (statPendingSub) statPendingSub.textContent = pendingAppts.length > 0 ? 'A aguardar' : 'Sem pendentes';
+      const statTotal = document.getElementById('doc-stat-total');
+      if (statTotal) statTotal.textContent = appts.length;
+
+      // Lista de próximas consultas
+      const upcoming = appts.slice(0, 5);
+      const upcomingList = document.getElementById('doc-upcoming-list');
+      if (upcomingList) {
+        if (upcoming.length === 0) {
+          upcomingList.innerHTML = '<div class="doc-empty"><div class="doc-empty-icon">📅</div><div class="doc-empty-text">Ainda não tens consultas marcadas pelos pacientes.</div></div>';
+        } else {
+          const colors = ['#fce7f3','#dbeafe','#d1fae5','#fef3c7','#ede9fe'];
+          upcomingList.innerHTML = upcoming.map((a,i) => `
+            <div class="doc-appt-item">
+              <div style="text-align:center;min-width:44px">
+                <div class="doc-appt-time">${a.time || '—'}</div>
+                <div class="doc-appt-date">${a.date || ''}</div>
+              </div>
+              <div class="doc-patient-icon" style="background:${colors[i%colors.length]}">👤</div>
+              <div class="doc-appt-info">
+                <div class="doc-appt-patient">${a.userName || 'Paciente'}</div>
+                <div class="doc-appt-reason">${a.specialty || ''} · ${a.reason || 'Consulta'}</div>
+              </div>
+              <span class="doc-badge doc-badge-green">Confirmada</span>
+              <button class="doc-btn doc-btn-primary" onclick="openConsultation('${a.doctor || 'Médico'}', '${a.id || ''}')">▶ Iniciar</button>
+            </div>`).join('');
+        }
+      }
+    } catch(e) {
+      console.log('Erro ao carregar dashboard médico:', e);
+      const upcomingList = document.getElementById('doc-upcoming-list');
+      if (upcomingList) upcomingList.innerHTML = '<div class="doc-empty"><div class="doc-empty-icon">📅</div><div class="doc-empty-text">Ainda não tens consultas marcadas.</div></div>';
+      const statEls = ['doc-stat-today','doc-stat-pending','doc-stat-total'];
+      statEls.forEach(id => { const el = document.getElementById(id); if(el) el.textContent = '0'; });
+    }
+  }
+
+  async function loadDocAllAppts(uid) {
+    const name = document.getElementById('doc-name').textContent;
+    const list = document.getElementById('doc-all-appts');
+    if (!list) return;
+    list.innerHTML = '<div class="doc-empty"><div class="doc-empty-icon">⏳</div><div class="doc-empty-text">A carregar...</div></div>';
+    try {
+      const { collection, query, where, getDocs, orderBy } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const q = query(collection(window._db, 'appointments'), where('doctor', '==', name), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      if (snap.empty) { list.innerHTML = '<div class="doc-empty"><div class="doc-empty-icon">📭</div><div class="doc-empty-text">Sem consultas registadas.</div></div>'; return; }
+      const colors = ['#fce7f3','#dbeafe','#d1fae5','#fef3c7','#ede9fe'];
+      let html = '';
+      let i = 0;
+      snap.forEach(d => {
+        const a = d.data();
+        html += `<div class="doc-appt-item">
+          <div style="text-align:center;min-width:44px"><div class="doc-appt-time">${a.time||'—'}</div><div class="doc-appt-date">${a.date||''}</div></div>
+          <div class="doc-patient-icon" style="background:${colors[i%colors.length]}">👤</div>
+          <div class="doc-appt-info"><div class="doc-appt-patient">${a.userName||'Paciente'}</div><div class="doc-appt-reason">${a.specialty||''} · ${a.reason||'Consulta'}</div></div>
+          <span class="doc-badge doc-badge-green">Confirmada</span>
+          <button class="doc-btn doc-btn-ghost" onclick="openPrescriptionModal()">📄 Receita</button>
+        </div>`; i++;
+      });
+      list.innerHTML = html;
+    } catch(e) { list.innerHTML = '<div class="doc-empty"><div class="doc-empty-icon">📅</div><div class="doc-empty-text">Ainda não tens consultas marcadas.</div></div>'; }
+  }
+
+  async function loadDocPatients(uid) {
+    const name = document.getElementById('doc-name').textContent;
+    const grid = document.getElementById('doc-patients-grid');
+    if (!grid) return;
+    grid.innerHTML = '<div class="doc-empty" style="grid-column:1/-1"><div class="doc-empty-icon">⏳</div><div class="doc-empty-text">A carregar...</div></div>';
+    try {
+      const { collection, query, where, getDocs, orderBy } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const q = query(collection(window._db, 'appointments'), where('doctor', '==', name), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      const patientsMap = {};
+      snap.forEach(d => {
+        const a = d.data();
+        const pname = a.userName || 'Paciente';
+        if (!patientsMap[pname]) patientsMap[pname] = {name: pname, count: 0, last: a.date, specialty: a.specialty};
+        patientsMap[pname].count++;
+      });
+      const patients = Object.values(patientsMap);
+      if (patients.length === 0) { grid.innerHTML = '<div class="doc-empty" style="grid-column:1/-1"><div class="doc-empty-icon">👥</div><div class="doc-empty-text">Ainda sem pacientes.</div></div>'; return; }
+      const colors = ['#fce7f3','#dbeafe','#d1fae5','#fef3c7','#ede9fe'];
+      grid.innerHTML = patients.map((p,i) => `
+        <div class="doc-patient-card">
+          <div class="doc-patient-header">
+            <div class="doc-patient-avatar" style="background:${colors[i%colors.length]}">👤</div>
+            <div>
+              <div class="doc-patient-name">${p.name}</div>
+              <div class="doc-patient-meta">${p.count} consulta${p.count>1?'s':''} · Última: ${p.last||'—'}</div>
+            </div>
+          </div>
+          <div class="doc-patient-actions">
+            <button class="doc-btn doc-btn-ghost" onclick="showToast('📋 Historial de ${p.name}')">📋 Historial</button>
+            <button class="doc-btn doc-btn-primary" onclick="openPrescriptionModal()">💊 Receita</button>
+          </div>
+        </div>`).join('');
+    } catch(e) { grid.innerHTML = '<div class="doc-empty" style="grid-column:1/-1"><div class="doc-empty-icon">👥</div><div class="doc-empty-text">Ainda não tens pacientes registados.</div></div>'; }
+  }
+
+  async function loadDocEarnings(uid) {
+    const name = document.getElementById('doc-name').textContent;
+    try {
+      const { collection, query, where, getDocs, orderBy } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const q = query(collection(window._db, 'appointments'), where('doctor', '==', name), orderBy('createdAt', 'desc'));
+      const snap = await getDocs(q);
+      const appts = [];
+      snap.forEach(d => appts.push(d.data()));
+      const specialtyPrices = { 'Clínica Geral': 3500, 'Cardiologia': 6000, 'Pediatria': 4200, 'Ginecologia': 5500, 'Dermatologia': 4800 };
+      const total = appts.reduce((sum, a) => {
+        const price = a.price || SPECIALTY_PRICES[a.specialty] || 3500;
+        return sum + price;
+      }, 0);
+      const monthEl = document.getElementById('doc-earn-month');
+      if (monthEl) monthEl.textContent = total.toLocaleString('pt-PT') + ' Kz';
+      const countEl = document.getElementById('doc-earn-count');
+      if (countEl) countEl.textContent = appts.length;
+      const tbody = document.getElementById('doc-earn-table');
+      if (tbody) {
+        if (appts.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px">Sem pagamentos registados.</td></tr>'; return; }
+        tbody.innerHTML = appts.slice(0,10).map(a => {
+          const price = a.price || SPECIALTY_PRICES[a.specialty] || 3500;
+          return `<tr>
+            <td>${a.date||'—'}</td>
+            <td>${a.userName||'Paciente'}</td>
+            <td>${a.specialty||'—'}</td>
+            <td>${price.toLocaleString('pt-PT')} Kz</td>
+            <td><span class="doc-badge doc-badge-green">Pago</span></td>
+          </tr>`;
+        }).join('');
+      }
+    } catch(e) { console.log('Erro ganhos:', e); }
+  }
+
+  async function saveDocSchedule() {
+    const user = window._auth.currentUser;
+    if (!user) { showToast('❌ Sessão expirada. Faz login novamente.'); return; }
+    try {
+      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      // Recolher todos os inputs de horário do formulário de agenda
+      const scheduleData = {};
+      document.querySelectorAll('#dtab-schedule input, #dtab-schedule select').forEach(el => {
+        if (el.id || el.name) scheduleData[el.id || el.name] = el.value;
+      });
+      await setDoc(doc(window._db, 'schedules', user.uid), {
+        ...scheduleData,
+        doctorName: document.getElementById('doc-name').textContent,
+        updatedAt: window._serverTimestamp()
+      }, { merge: true });
+      showToast('✅ Horários guardados com sucesso!');
+    } catch(e) {
+      console.error('Erro ao guardar horários:', e);
+      if (!navigator.onLine) {
+        showToast('❌ Sem ligação. Verifica a tua rede.');
+      } else {
+        showToast('❌ Erro ao guardar horários. Tenta novamente.');
+      }
+    }
+  }
+
+  function openPrescriptionModal() {
+    document.getElementById('prescription-modal').classList.add('open');
+  }
+  function closePrescriptionModal() {
+    document.getElementById('prescription-modal').classList.remove('open');
+  }
+  async function emitirReceita() {
+    const patientInput = document.querySelector('#prescription-modal input[placeholder="Nome do paciente"]');
+    const medInput = document.querySelector('#prescription-modal input[placeholder="Ex: Amoxicilina 500mg"]');
+    const posInput = document.querySelector('#prescription-modal input[placeholder="Ex: 3x/dia durante 7 dias"]');
+    const obsArea = document.querySelector('#prescription-modal .form-textarea');
+    const valInput = document.querySelector('#prescription-modal input[type="date"]');
+    const patient = patientInput.value.trim();
+    const med = medInput.value.trim();
+    const pos = posInput.value.trim();
+    const obs = obsArea.value.trim();
+    const val = valInput.value;
+    if (!patient || !med) { showToast('❌ Preenche o paciente e o medicamento.'); return; }
+    const submitBtn = document.querySelector('#prescription-modal .btn-submit');
+    submitBtn.textContent = 'A emitir...'; submitBtn.disabled = true;
+    try {
+      const user = window._auth.currentUser;
+      const { collection, addDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      await addDoc(collection(window._db, 'prescriptions'), {
+        doctorUid: user ? user.uid : null,
+        doctorName: document.getElementById('doc-name').textContent,
+        patient, medication: med, posology: pos, notes: obs, validUntil: val,
+        createdAt: window._serverTimestamp()
+      });
+      // Limpar formulário
+      patientInput.value = ''; medInput.value = ''; posInput.value = ''; obsArea.value = ''; valInput.value = '';
+      closePrescriptionModal();
+      showToast('✅ Receita digital emitida e guardada!');
+    } catch(e) {
+      console.error('Erro ao emitir receita:', e);
+      showToast('❌ Erro ao emitir receita. Verifica a ligação e tenta novamente.');
+    } finally {
+      submitBtn.textContent = '📄 Emitir receita digital'; submitBtn.disabled = false;
+    }
+  }
+
+
+  // ── MULTICAIXA EXPRESS ──
+  let mxCurrentRef = '';
+  let mxCurrentAmount = 0;
+  let mxCurrentPlan = '';
+
+  function openMulticaixa(plan, price) {
+    mxCurrentPlan = plan || 'Família';
+    const basePrice = parseInt((price || '5900').toString().replace(/[^0-9]/g, ''));
+    const iva = Math.round(basePrice * 0.14);
+    const total = basePrice + iva;
+    mxCurrentAmount = total;
+    document.getElementById('mx-plan-name').textContent = 'Plano ' + mxCurrentPlan;
+    document.getElementById('mx-plan-price').textContent = basePrice.toLocaleString();
+    document.getElementById('mx-summary-plan').textContent = mxCurrentPlan;
+    document.getElementById('mx-iva').textContent = iva.toLocaleString() + ' Kz';
+    document.getElementById('mx-total').textContent = total.toLocaleString() + ' Kz';
+    document.getElementById('mx-amount-display').textContent = total.toLocaleString() + ' Kz';
+    document.getElementById('mx-amount-inline').textContent = total.toLocaleString() + ' Kz';
+    document.getElementById('mx-confirmed-plan').textContent = 'Plano ' + mxCurrentPlan;
+    // Set expiry date (3 days from now)
+    const expiry = new Date();
+    expiry.setDate(expiry.getDate() + 3);
+    document.getElementById('mx-expiry').textContent = expiry.toLocaleDateString('pt-AO');
+    // Set valid until (1 month from now)
+    const validUntil = new Date();
+    validUntil.setMonth(validUntil.getMonth() + 1);
+    document.getElementById('mx-valid-until').textContent = validUntil.toLocaleDateString('pt-AO');
+    // Show step 1
+    document.getElementById('mx-step-1').style.display = 'block';
+    document.getElementById('mx-step-2').style.display = 'none';
+    document.getElementById('mx-step-3').style.display = 'none';
+    document.getElementById('multicaixa-modal').classList.add('open');
+  }
+
+  function closeMulticaixa() {
+    document.getElementById('multicaixa-modal').classList.remove('open');
+  }
+
+  function mxGerarReferencia() {
+    const phone = document.getElementById('mx-phone').value.replace(/\s/g,'');
+    if (phone.length < 9) { showToast('❌ Introduz um número de telemóvel válido'); return; }
+    // Generate fake reference (9 digits)
+    const ref = Math.floor(100000000 + Math.random() * 900000000).toString();
+    const refFormatted = ref.slice(0,3) + ' ' + ref.slice(3,6) + ' ' + ref.slice(6,9);
+    mxCurrentRef = ref;
+    document.getElementById('mx-ref-display').textContent = refFormatted;
+    document.getElementById('mx-step-1').style.display = 'none';
+    document.getElementById('mx-step-2').style.display = 'block';
+    showToast('📲 Referência gerada com sucesso!');
+  }
+
+  function mxCopiarRef() {
+    navigator.clipboard.writeText(mxCurrentRef).then(() => {
+      showToast('📋 Referência copiada!');
+    }).catch(() => {
+      showToast('Referência: ' + mxCurrentRef);
+    });
+  }
+
+  function mxPartilhar() {
+    const text = `Pagamento MédiKa Angola\nEntidade: 11351\nReferência: ${mxCurrentRef}\nMontante: ${mxCurrentAmount.toLocaleString()} Kz`;
+    if (navigator.share) {
+      navigator.share({ title: 'Pagamento MédiKa', text: text });
+    } else {
+      navigator.clipboard.writeText(text);
+      showToast('📋 Dados copiados para partilhar!');
+    }
+  }
+
+  function mxVoltar() {
+    document.getElementById('mx-step-1').style.display = 'block';
+    document.getElementById('mx-step-2').style.display = 'none';
+  }
+
+  function mxVerificarPagamento() {
+    const btn = document.getElementById('mx-verify-btn');
+    btn.innerHTML = '⏳ A verificar pagamento...';
+    btn.disabled = true;
+    // Simulate verification (in production, this calls your backend)
+    setTimeout(() => {
+      document.getElementById('mx-step-2').style.display = 'none';
+      document.getElementById('mx-step-3').style.display = 'block';
+      btn.innerHTML = '✅ Já paguei — Verificar pagamento';
+      btn.disabled = false;
+    }, 2500);
+  }
+
+
+  // ── RECUPERAÇÃO DE PASSWORD ──
+  async function forgotPassword() {
+    const email = document.getElementById('login-email').value.trim();
+    if (!email) {
+      showToast('📧 Introduz o teu email no campo acima primeiro.');
+      return;
+    }
+    try {
+      const { sendPasswordResetEmail } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+      await sendPasswordResetEmail(window._auth, email);
+      showToast('✅ Email de recuperação enviado! Verifica a tua caixa de entrada.');
+    } catch(e) {
+      if (e.code === 'auth/user-not-found') {
+        showToast('❌ Não existe conta com esse email.');
+      } else if (e.code === 'auth/invalid-email') {
+        showToast('❌ Email inválido. Verifica o formato.');
+      } else {
+        showToast('❌ Erro ao enviar email. Tenta novamente.');
+      }
+    }
+  }
+  window.forgotPassword = forgotPassword;
+
+  // ── FILTRO DE MÉDICOS ──
+  function filterDoctors() {
+    const search = (document.getElementById('doctor-search')?.value || '').toLowerCase();
+    const spec = document.getElementById('doctor-specialty-filter')?.value || '';
+    const cards = document.querySelectorAll('#doctors-grid .doctor-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const name = (card.dataset.name || '').toLowerCase();
+      const cardSpec = card.dataset.spec || '';
+      const matchSearch = !search || name.includes(search);
+      const matchSpec = !spec || cardSpec === spec;
+      card.style.display = (matchSearch && matchSpec) ? '' : 'none';
+      if (matchSearch && matchSpec) visible++;
+    });
+    // Mostrar mensagem se não houver resultados
+    let noResults = document.getElementById('doctors-no-results');
+    if (!noResults) {
+      noResults = document.createElement('p');
+      noResults.id = 'doctors-no-results';
+      noResults.style.cssText = 'color:#9ca3af;font-size:14px;padding:20px;grid-column:1/-1';
+      noResults.textContent = 'Nenhum médico encontrado com esses critérios.';
+      document.getElementById('doctors-grid')?.appendChild(noResults);
+    }
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+  }
+  window.filterDoctors = filterDoctors;
+
+  // ── ESTATÍSTICAS DINÂMICAS DO PAINEL DO PACIENTE ──
+  async function loadPatientDashboardStats(uid) {
+    try {
+      // Consultas do mês actual
+      const now = new Date();
+      const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+      const q = window._query(
+        window._collection(window._db, 'appointments'),
+        window._where('userId', '==', uid),
+        window._orderBy('createdAt', 'desc')
+      );
+      const snap = await window._getDocs(q);
+      const appts = [];
+      snap.forEach(d => appts.push({ id: d.id, ...d.data() }));
+
+      // Consultas este mês
+      const thisMonth = appts.filter(a => a.date >= firstDay);
+      const countEl = document.getElementById('patient-consult-count');
+      if (countEl) countEl.textContent = thisMonth.length;
+      const changeEl = document.getElementById('patient-consult-change');
+      if (changeEl) changeEl.textContent = thisMonth.length > 0 ? `${thisMonth.length} consulta(s) este mês` : 'Sem consultas este mês';
+
+      // Próxima consulta futura
+      const today = now.toISOString().split('T')[0];
+      const upcoming = appts.filter(a => a.date >= today).sort((a, b) => a.date > b.date ? 1 : -1);
+      const nextTimeEl = document.getElementById('patient-next-time');
+      const nextDocEl = document.getElementById('patient-next-doctor');
+      if (upcoming.length > 0) {
+        const next = upcoming[0];
+        if (nextTimeEl) nextTimeEl.textContent = next.time || '—';
+        if (nextDocEl) nextDocEl.textContent = `${next.doctor || '—'} · ${next.specialty || ''}`;
+      } else {
+        if (nextTimeEl) nextTimeEl.textContent = '—';
+        if (nextDocEl) { nextDocEl.textContent = 'Sem consultas futuras'; nextDocEl.style.color = '#9ca3af'; }
+      }
+
+      // Receitas activas (prescriptions do utilizador)
+      try {
+        const qPres = window._query(
+          window._collection(window._db, 'prescriptions'),
+          window._where('userId', '==', uid)
+        );
+        const snapPres = await window._getDocs(qPres);
+        const presCount = snapPres.size;
+        const presEl = document.getElementById('patient-prescriptions');
+        if (presEl) presEl.textContent = presCount;
+        const presSubEl = document.getElementById('patient-prescriptions-sub');
+        if (presSubEl) presSubEl.textContent = presCount > 0 ? `${presCount} receita(s) activa(s)` : 'Sem receitas activas';
+      } catch(e) {
+        const presEl = document.getElementById('patient-prescriptions');
+        if (presEl) presEl.textContent = '0';
+      }
+
+      // Plano do utilizador
+      try {
+        const snap2 = await window._getDoc(window._doc(window._db, 'users', uid));
+        if (snap2.exists()) {
+          const planLabel = snap2.data().plan || 'Básico';
+          const planEl = document.getElementById('patient-plan-label');
+          if (planEl) planEl.textContent = planLabel;
+          // Actualizar sidebar
+          const roleEl = document.querySelector('.user-role');
+          if (roleEl) roleEl.textContent = `Plano ${planLabel}`;
+        }
+      } catch(e) { /* mantém valor padrão */ }
+
+    } catch(e) {
+      console.log('Erro ao carregar stats do paciente:', e);
+    }
+  }
+  window._loadPatientDashboardStats = loadPatientDashboardStats;
+
+  // ── ADMIN FUNCTIONS ──
+  async function adminDeleteDoctor(rowId, name) {
+    if (!confirm('Tens a certeza que queres eliminar ' + name + '? Esta acção não pode ser desfeita.')) return;
+    try {
+      // Delete from Firestore
+      const q = window._query(window._collection(window._db, 'doctors'), window._where('name', '==', name));
+      const snap = await window._getDocs(q);
+      const delPromises = [];
+      snap.forEach(d => delPromises.push(window._deleteDoc(window._doc(window._db, 'doctors', d.id))));
+      await Promise.all(delPromises);
+      // Remove from UI
+      const row = document.getElementById(rowId);
+      if (row) {
+        row.style.transition = 'opacity 0.3s';
+        row.style.opacity = '0';
+        setTimeout(() => row.remove(), 300);
+      }
+      showToast('✅ ' + name + ' eliminado com sucesso!');
+    } catch(e) {
+      console.error('Delete error:', e);
+      // Still remove from UI even if not in DB
+      const row = document.getElementById(rowId);
+      if (row) row.remove();
+      showToast('✅ ' + name + ' removido do painel!');
+    }
+  }
+
+  async function adminApproveDoctor(rowId, name) {
+    try {
+      // Update status in Firestore
+      const q = window._query(window._collection(window._db, 'doctors'), window._where('name', '==', name));
+      const snap = await window._getDocs(q);
+      snap.forEach(async d => {
+        await window._setDoc(window._doc(window._db, 'doctors', d.id), { status: 'active' }, { merge: true });
+      });
+      // Update UI
+      const row = document.getElementById(rowId);
+      if (row) {
+        const statusEl = row.querySelector('.a-status');
+        if (statusEl) { statusEl.className = 'a-status a-status-active'; statusEl.textContent = 'Activo'; }
+      }
+      showToast('✅ ' + name + ' aprovado com sucesso!');
+    } catch(e) {
+      showToast('✅ ' + name + ' aprovado!');
+    }
+  }
+
+  // ── TOAST ──
+  function showToast(msg) { const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3500); }
+
+  function scrollToPricing() { document.getElementById('pricing-section')?.scrollIntoView({ behavior:'smooth' }); }
+
+  // Initialize on page load
+  window.addEventListener('load', function() {
+    const patientNav = document.getElementById('bottom-nav');
+    const doctorNav = document.getElementById('doc-bottom-nav');
+    if (patientNav) patientNav.style.display = 'none';
+    if (doctorNav) doctorNav.style.display = 'none';
+  });
+
+  // Ano dinâmico no footer
+  document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+  // Fechar modais com ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeBooking();
+      closePrescriptionModal();
+      closeUnitel();
+      closeMulticaixa();
+      if (document.getElementById('consultation-view').classList.contains('open')) {
+        endConsultation();
+      }
+    }
+  });
+
+  // Fechar modais ao clicar fora
+  document.getElementById('booking-modal').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
+  document.getElementById('prescription-modal').addEventListener('click', function(e) { if (e.target === this) closePrescriptionModal(); });
+
+  // ── EXPOR FUNÇÕES AO ESCOPO GLOBAL (necessário porque este script é type="module") ──
+  window.showToast = showToast;
+  window.scrollToPricing = scrollToPricing;
+  window.openBooking = openBooking;
+  window.openBookingFor = openBookingFor;
+  window.closeBooking = closeBooking;
+  window.selectSlot = selectSlot;
+  window.confirmBooking = confirmBooking;
+  window.openConsultation = openConsultation;
+  window.endConsultation = endConsultation;
+  window.openMulticaixa = openMulticaixa;
+  window.closeMulticaixa = closeMulticaixa;
+  window.mxGerarReferencia = mxGerarReferencia;
+  window.mxCopiarRef = mxCopiarRef;
+  window.mxPartilhar = mxPartilhar;
+  window.mxVoltar = mxVoltar;
+  window.mxVerificarPagamento = mxVerificarPagamento;
+  window.openUnitel = openUnitel;
+  window.closeUnitel = closeUnitel;
+  window.confirmarPagamento = confirmarPagamento;
+  window.switchAdminTab = switchAdminTab;
+  window.switchDocTab = switchDocTab;
+  window.switchDocTabMobile = switchDocTabMobile;
+  window.openPrescriptionModal = openPrescriptionModal;
+  window.closePrescriptionModal = closePrescriptionModal;
+  window.emitirReceita = emitirReceita;
+  window.saveDocSchedule = saveDocSchedule;
+  window.updateDoctorsBySpecialty = updateDoctorsBySpecialty;
+  window.saveHealthProfile = saveHealthProfile;
+  window.switchTabMobile = switchTabMobile;
+  window.loadPatientDashboardStats = loadPatientDashboardStats;
+</script>
+
+<!-- UNITEL MONEY PAYMENT MODAL -->
+<div class="modal-overlay" id="unitel-modal">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeUnitel()">✕</button>
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:48px;margin-bottom:8px">📱</div>
+      <h2 style="font-size:24px">Pagamento via Unitel Money</h2>
+      <p style="color:#6b7280;font-size:14px;margin-top:4px">Sigue os passos abaixo para activar o teu plano</p>
+    </div>
+
+    <div id="unitel-plan-info" style="background:var(--teal-pale);border:1px solid rgba(13,148,136,0.2);border-radius:12px;padding:16px;margin-bottom:20px;text-align:center">
+      <div style="font-size:13px;color:var(--teal);font-weight:600">PLANO SELECIONADO</div>
+      <div style="font-family:'Instrument Serif',serif;font-size:36px;color:var(--ink);margin:4px 0" id="unitel-price">5.900 Kz</div>
+      <div style="font-size:13px;color:#6b7280" id="unitel-plan-name">Plano Família — mensal</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:#f8fafc;border-radius:10px;border:1px solid var(--cream-dark)">
+        <div style="width:28px;height:28px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">1</div>
+        <div>
+          <div style="font-weight:600;font-size:14px">Abre o Unitel Money</div>
+          <div style="font-size:13px;color:#6b7280;margin-top:2px">Na app Unitel Money ou marca <strong>*130#</strong> no teu telemóvel</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:#f8fafc;border-radius:10px;border:1px solid var(--cream-dark)">
+        <div style="width:28px;height:28px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">2</div>
+        <div>
+          <div style="font-weight:600;font-size:14px">Selecciona "Transferência"</div>
+          <div style="font-size:13px;color:#6b7280;margin-top:2px">Escolhe a opção de transferência para outro número</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--teal-pale);border-radius:10px;border:1px solid rgba(13,148,136,0.3)">
+        <div style="width:28px;height:28px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">3</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:14px">Transfere para este número</div>
+          <div style="font-size:22px;font-weight:700;color:var(--teal);margin:6px 0;letter-spacing:2px">+244 945 198 283</div>
+          <div style="font-size:12px;color:#6b7280">Nome: MédiKa Angola · João Bento</div>
+          <button onclick="navigator.clipboard.writeText('945198283');showToast('📋 Número copiado!')" style="margin-top:8px;background:var(--teal);color:white;border:none;padding:6px 14px;border-radius:8px;font-size:12px;cursor:pointer;font-family:DM Sans,sans-serif">📋 Copiar número</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:#f8fafc;border-radius:10px;border:1px solid var(--cream-dark)">
+        <div style="width:28px;height:28px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">4</div>
+        <div>
+          <div style="font-weight:600;font-size:14px">Envia o comprovativo</div>
+          <div style="font-size:13px;color:#6b7280;margin-top:2px">Tira screenshot do comprovativo e envia por WhatsApp para</div>
+          <div style="font-size:16px;font-weight:700;color:var(--ink);margin-top:4px">+244 945 198 283</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:#f8fafc;border-radius:10px;border:1px solid var(--cream-dark)">
+        <div style="width:28px;height:28px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0">5</div>
+        <div>
+          <div style="font-weight:600;font-size:14px">Activação em 24 horas</div>
+          <div style="font-size:13px;color:#6b7280;margin-top:2px">Após confirmação do pagamento, o teu plano é activado e recebes email de confirmação</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:10px;padding:12px 16px;font-size:13px;color:#92400e;margin-bottom:16px">
+      ⚠️ <strong>Importante:</strong> Inclui sempre o teu email no WhatsApp para identificarmos a tua conta corretamente.
+    </div>
+
+    <button class="btn-submit" onclick="confirmarPagamento()">
+      ✅ Já fiz a transferência — Aguardar activação
+    </button>
+
+    <div style="text-align:center;margin-top:14px">
+      <a href="https://wa.me/244945198283" target="_blank" style="color:var(--teal);font-size:13px;font-weight:600;text-decoration:none">
+        💬 Falar com suporte no WhatsApp
+      </a>
+    </div>
+  </div>
+</div>
+
+
+<!-- MULTICAIXA EXPRESS PAYMENT MODAL -->
+<div class="modal-overlay" id="multicaixa-modal">
+  <div class="modal" style="max-width:500px">
+    <button class="modal-close" onclick="closeMulticaixa()">✕</button>
+
+    <!-- STEP 1 — Escolha de plano -->
+    <div id="mx-step-1">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:48px;margin-bottom:8px">💳</div>
+        <h2 style="font-size:24px">Pagamento Multicaixa Express</h2>
+        <p style="color:#6b7280;font-size:14px;margin-top:4px">Pagamento seguro e instantâneo</p>
+      </div>
+
+      <div id="mx-plan-box" style="background:var(--teal-pale);border:1px solid rgba(13,148,136,0.3);border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:13px;color:var(--teal);font-weight:600">PLANO SELECIONADO</div>
+            <div style="font-size:18px;font-weight:700;margin-top:4px" id="mx-plan-name">Plano Família</div>
+            <div style="font-size:13px;color:#6b7280">Renovação mensal automática</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:Instrument Serif,serif;font-size:36px;color:var(--ink)" id="mx-plan-price">5.900</div>
+            <div style="font-size:12px;color:#6b7280">Kz/mês</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label class="form-label">Número de telemóvel (Multicaixa Express)</label>
+        <div style="display:flex;gap:8px">
+          <div style="background:var(--cream);border:1px solid var(--cream-dark);border-radius:10px;padding:13px 14px;font-size:14px;font-weight:600;white-space:nowrap">+244</div>
+          <input type="tel" class="form-input" id="mx-phone" placeholder="9XX XXX XXX" maxlength="9" style="letter-spacing:2px">
+        </div>
+        <div style="font-size:12px;color:#9ca3af;margin-top:6px">Receberás um código de confirmação neste número</div>
+      </div>
+
+      <div style="background:#f8fafc;border:1px solid var(--cream-dark);border-radius:10px;padding:14px;margin-bottom:20px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px">Resumo da compra</div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#6b7280">Plano</span><span id="mx-summary-plan">Família</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#6b7280">Período</span><span>1 mês</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span style="color:#6b7280">IVA (14%)</span><span id="mx-iva">826 Kz</span></div>
+        <div style="height:1px;background:var(--cream-dark);margin:10px 0"></div>
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700"><span>Total</span><span id="mx-total" style="color:var(--teal)">6.726 Kz</span></div>
+      </div>
+
+      <button class="btn-submit" onclick="mxGerarReferencia()">
+        Gerar referência de pagamento →
+      </button>
+      <div style="text-align:center;margin-top:12px;font-size:12px;color:#9ca3af">🔒 Pagamento processado pela EMIS · Multicaixa Express</div>
+    </div>
+
+    <!-- STEP 2 — Referência gerada -->
+    <div id="mx-step-2" style="display:none">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:48px;margin-bottom:8px">📲</div>
+        <h2 style="font-size:22px">Referência gerada!</h2>
+        <p style="color:#6b7280;font-size:14px;margin-top:4px">Usa estes dados para pagar no Multicaixa Express</p>
+      </div>
+
+      <div style="background:var(--ink);color:white;border-radius:16px;padding:24px;margin-bottom:20px;text-align:center">
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px">ENTIDADE</div>
+        <div style="font-size:32px;font-weight:700;letter-spacing:4px;color:var(--teal-light)">11351</div>
+        <div style="height:1px;background:rgba(255,255,255,0.1);margin:16px 0"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px">REFERÊNCIA</div>
+        <div style="font-size:28px;font-weight:700;letter-spacing:3px" id="mx-ref-display">000 000 000</div>
+        <div style="height:1px;background:rgba(255,255,255,0.1);margin:16px 0"></div>
+        <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px">MONTANTE</div>
+        <div style="font-size:28px;font-weight:700;color:var(--teal-light)" id="mx-amount-display">6.726 Kz</div>
+        <div style="margin-top:16px;font-size:12px;color:rgba(255,255,255,0.4)">Válida até: <span id="mx-expiry"></span></div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-bottom:20px">
+        <button class="btn" style="flex:1;background:var(--teal-pale);color:var(--teal);border:none;padding:12px;border-radius:10px;cursor:pointer;font-weight:600" onclick="mxCopiarRef()">📋 Copiar referência</button>
+        <button class="btn" style="flex:1;background:var(--cream);border:1px solid var(--cream-dark);padding:12px;border-radius:10px;cursor:pointer;font-weight:600" onclick="mxPartilhar()">📤 Partilhar</button>
+      </div>
+
+      <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px">Como pagar:</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;align-items:center"><div style="width:24px;height:24px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</div><span style="font-size:13px">Abre o Multicaixa Express ou vai a um ATM</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><div style="width:24px;height:24px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</div><span style="font-size:13px">Selecciona <strong>"Pagamentos"</strong> → <strong>"Referência"</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:center"><div style="width:24px;height:24px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</div><span style="font-size:13px">Introduz a entidade <strong>11351</strong> e a referência acima</span></div>
+          <div style="display:flex;gap:10px;align-items:center"><div style="width:24px;height:24px;background:var(--teal);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</div><span style="font-size:13px">Confirma o montante de <strong id="mx-amount-inline">6.726 Kz</strong></span></div>
+        </div>
+      </div>
+
+      <button class="btn-submit" onclick="mxVerificarPagamento()" id="mx-verify-btn">
+        ✅ Já paguei — Verificar pagamento
+      </button>
+      <div style="text-align:center;margin-top:10px">
+        <a onclick="mxVoltar()" style="color:#9ca3af;font-size:13px;cursor:pointer">← Voltar</a>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Confirmação -->
+    <div id="mx-step-3" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:64px;margin-bottom:16px">🎉</div>
+      <h2 style="font-size:24px;margin-bottom:8px">Pagamento confirmado!</h2>
+      <p style="color:#6b7280;font-size:14px;margin-bottom:24px">O teu plano foi activado com sucesso</p>
+      <div style="background:var(--teal-pale);border:1px solid rgba(13,148,136,0.3);border-radius:12px;padding:20px;margin-bottom:24px">
+        <div style="font-size:13px;color:var(--teal);font-weight:600;margin-bottom:4px">PLANO ACTIVO</div>
+        <div style="font-size:22px;font-weight:700" id="mx-confirmed-plan">Plano Família</div>
+        <div style="font-size:13px;color:#6b7280;margin-top:4px">Válido até <span id="mx-valid-until"></span></div>
+      </div>
+      <button class="btn-submit" onclick="closeMulticaixa();showToast('🎉 Bem-vindo ao Plano Família!')">
+        Começar a usar o MédiKa →
+      </button>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>
